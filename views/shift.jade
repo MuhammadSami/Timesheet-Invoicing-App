@@ -1,0 +1,266 @@
+extends layout 
+block scripts
+    script.
+        var rowIndex= 0;
+        function add_row(){
+          rowIndex ++;
+          
+          var newRow = '<tr><td><div class="form-group"><input type="date" name="start_date" placeholder="select date" required="" autofocus="" class="form-control start_date"></div></td>"'+
+                      '<td><div class="form-group"><input type="text" id="start_time'+rowIndex+'" name="start_time" placeholder="e.g 08:30" pattern="\\d{02}:\\d{02}" required="" class="form-control start_time"></div></td>"'+
+                      '<td><div class="form-group"><input type="text" id="end_time'+rowIndex+'"name="end_time" placeholder="e.g 17:30" pattern="\\d{02}:\\d{02}" required="" class="form-control end_time"></div></td>"'+
+                      '<td colspan="3"><div class="form-group"><input type="text" name="location" placeholder="570 Bourke Street" required="" class="form-control"></div></td>"'+
+                      '<td><div class="form-group"><input readonly="" id="hours'+rowIndex+'" type="number" name="hours" placeholder="0" required="" class="form-control hours"></div></td>"'+
+                      '<td><div class="form-group"><select id="hourly_rate'+rowIndex+'" name="hourly_rate" required="" class="hourly_rate'+rowIndex+'"><option value="22">Base Pay</option><option value="30">Public Holiday</option></select></div></td>"'+
+                      '<td><div class="form-group"><input readonly="" id="amount'+rowIndex+'" type="number" name="amount" required="" class="form-control amount"></div></td>"'+
+                      '<td><div class="form-group"><button id="removerow" name="removerow'+rowIndex+'" class="negative ui button"><i class="remove icon"></i>Remove</button></div></td></tr>';
+  
+              $("#shiftTable > tbody:last-child").prev().after(newRow);
+
+        }
+        function remove_row(){
+          $('#shiftTable  tr:last').remove();
+        }
+        function calculateTime(start_time, end_time, hours_worked, amount, hourly) {
+          //get values
+          var valuestart = $(start_time).val();
+          var valuestop = $(end_time).val();
+            //calculate hours for user    
+          var time1 = $(start_time).val().split(':'), time2 = $(end_time).val().split(':');
+          var hours1 = parseInt(time1[0], 10), 
+             hours2 = parseInt(time2[0], 10),
+             mins1 = parseInt(time1[1], 10),
+             mins2 = parseInt(time2[1], 10);
+          var hours = hours2 - hours1, mins = 0;
+          if(hours < 0) hours = 24 + hours;
+          if(mins2 >= mins1) {
+                mins = mins2 - mins1;
+          }
+         else {
+            mins = (mins2 + 60) - mins1;
+            hours--;
+          }
+          mins = mins / 60;
+          hours += mins;
+          hours = hours.toFixed(2);
+          $(hours_worked).val(hours);
+
+          rate = $(hourly).val();
+          console.log("Rate : "+rate);
+          var hours_w = $(hours_worked).val();
+          var pay = rate * hours_w;
+          $(amount).val(pay);
+          console.log("pay :"+pay);
+        }
+        function calculateSpecialPay(Sdate, hourly){
+          
+          //Calculate pay for user based on field selected #todo make it based on Public holiday dates   
+          var vic_holidays = ["2017-01-01","2017-01-26","2017-04-25","2017-12-25","2017-12-26"];
+          var public_holiday= $(Sdate).val();
+          console.log("DATE IS :"+public_holiday);
+          for (i=0; i<vic_holidays.length; i++){
+            if (public_holiday === vic_holidays[i]){
+                $(hourly).val('30');
+                break;
+            }
+            else{
+                $(hourly).val('22');
+                break;
+            }
+          }
+        }
+        $(document).ready(function(){
+            var start = "#start_time"+rowIndex;
+            var end = "#end_time"+rowIndex;
+            var hours = "#hours"+rowIndex;
+            var amount = "#amount"+rowIndex;
+            var hourly = "#hourly_rate"+rowIndex;
+            var start_date= "#start_date"+rowIndex;
+            $("form").change(function(){
+              calculateTime(start, end, hours, amount, hourly);
+              calculateSpecialPay(start_date, hourly);
+              // sum all totals
+              var sum = 0;
+              
+              $(".amount").each(function () {
+                  if (!isNaN(this.value) && this.value.length != 0) {
+                      sum += parseFloat(this.value);
+                  }
+              });
+
+              // show values in netto, steuer, brutto fields
+              $("#total").val(sum.toFixed(2));
+              var sum1 = 0;
+              $(".hours").each(function () {
+                  if (!isNaN(this.value) && this.value.length != 0) {
+                      sum1 += parseFloat(this.value);
+                  }
+              });  
+              
+              $("#total_hours").val(sum1.toFixed(2));
+              
+            });
+            $(document).on('click', '#add_row', function() {
+              var start = "#start_time"+rowIndex;
+              var end = "#end_time"+rowIndex;
+              var hours = "#hours"+rowIndex;
+              var amount = "#amount"+rowIndex;
+              var hourly = "#hourly_rate"+rowIndex;
+              var start_date= "#start_date"+rowIndex;
+              $("form").change(function(){
+                calculateTime(start, end, hours, amount, hourly);
+                calculateSpecialPay(start_date, hourly);
+                // sum all totals
+                var sum = 0;
+                $(".amount").each(function () {
+                    if (!isNaN(this.value) && this.value.length != 0) {
+                        sum += parseFloat(this.value);
+                    }
+                });
+                // show values in netto, steuer, brutto fields
+                $("#total").val(sum.toFixed(2));
+                var sum1 = 0;
+                $(".hours").each(function () {
+                    if (!isNaN(this.value) && this.value.length != 0) {
+                        sum1 += parseFloat(this.value);
+                    }
+                });  
+                
+                $("#total_hours").val(sum1.toFixed(2));
+                
+              });
+              
+
+              
+            });
+
+
+            $(document).on('click', '#removerow', function() {
+              $(this).parents('tr').remove();
+                var sum1 = 0;
+                var pos1 = 0;
+                $(".hours").each(function () {
+                    if (!isNaN(this.value) && this.value.length != 0) {
+                        sum1 -= parseFloat(this.value);
+                        pos1=-1*sum1;
+                    }
+                });  
+                
+                $("#total_hours").val(pos1.toFixed(2));
+                var pos = 0;
+                var sum = 0;
+                $(".amount").each(function () {
+                    if (!isNaN(this.value) && this.value.length != 0) {
+                        sum -= parseFloat(this.value);
+                        pos=-1*sum;
+                    }
+                });
+                $("#total").val(pos.toFixed(2));              
+                
+            });
+        });
+     
+        
+block content
+  if (!user)
+     .ui.raised.very.padded.text.container.segment
+       <img class="ui medium image" src="/images/agpLogo.png">
+       .ui.warning.message
+         i.close.icon
+         .header
+            | You must register before you can do that!
+          |   Visit our registration page, then try again      
+        .ui.header Aus Group Protective
+        .ui.steps
+          a.step(href="/login")
+            i.sign.in.icon
+            .content
+              .title Sign in
+              .description Sign Into your Account.
+          a.step(href="/register")
+            i.add.user.icon
+            .content
+              .title Sign Up
+              .description Sign up for an Account.
+  if (user)
+    .right.floated.left.aligned.six.wide.column
+        .ui.segment
+          .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+      .ui.top.attached.tabular.menu
+        a.item(href="/") Home
+        a.active.item(href="/shifts") Add Shifts
+        a.item(href="/all") Show All Shifts
+        a.item(href="/remove") Remove Shifts
+        a.item(href="/logout") Logout
+        .item 
+      .ui.bottom.attached.active.tab.segment 
+        .container
+        p.lead Hi <strong>#{user.username}</strong>, please add your shift below.
+        br
+        form(role='form', action="/addshift", method="post", style='max-width: 80%;')
+          table#shiftTable
+            tr 
+              th Date
+              th Start Time
+              th End Time
+              th(colspan="3") Location  (e.g 570 Bourke Street)
+              th Hours Done
+              th Hourly Rate
+              th Pay 
+              th
+            tbody
+              tr  
+                td            
+                  .form-group
+                      input.form-control(type="date", name="start_date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                td
+                  .form-group
+                    input.form-control(type='text', id="start_time0",class="start_time", name="start_time", placeholder='e.g 08:30' , pattern='\\d{02}:\\d{02}' required='')
+                td
+                  .form-group
+                    input.form-control(type='tel',id="end_time0",class="end_time", name="end_time",placeholder= 'e.g 17:30',pattern='\\d{02}:\\d{02}' required='')
+                td(colspan="3")
+                  .form-group
+                    input.form-control(type='text', name="location", placeholder='570 Bourke Street' required='')
+                td
+                  .form-group
+                    input.form-control(readonly type='number',id="hours0",class="hours", name='hours', placeholder='0' required='')
+                td
+                  .form-group
+                    select(name='hourly_rate', class="hourly_rate" ,id="hourly_rate0",required='' )
+                      option(value='22') Base Pay
+                      option(value='30') Public Holiday
+                td
+                  .form-group
+                    input.form-control(readonly type='number',id="amount0",class="amount", name="amount" required='')
+                td
+                  .form-group
+                    button#removerow.negative.ui.button(name="removerow") 
+                      i.remove.icon 
+                      | Remove
+                tr
+                  th(colspan="6") Total
+                  td 
+                    .form-group
+                      input.form-control(readonly type='number', id="total_hours",name="total_hours", min="0" )
+                  td
+                  td 
+                    .form-group
+                      input.form-control(readonly type='number', id="total",name="total",min="0" )
+                  td
+          a(id="add_row" onclick='add_row();')
+            .ui.green.labeled.icon.button
+              i.plus.icon
+              | Add more shifts
+          
+          br
+          button.btn.btn-default(type='submit') Submit
+          &nbsp;
+          a(href='/')
+            button.btn.btn-primary(type="button") Back
+          table(style="display:none")
+            tr
+              th Date      
+            tr
+              - each shift in user.public_holiday                
+                  td= shift.date
+                  tr 

@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .right.floated.left.aligned.six.wide.column
+        .ui.segment
+            .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+            legend Reset Password
+    form(method='POST', , style="max-width: 300px;")
+        .form-group
+            label(for='password') New Password
+            input.form-control(type='password', name='password', value='', placeholder='New password', autofocus=true)
+        .form-group
+            label(for='confirm') Confirm Password
+            input.form-control(type='password', name='confirm', value='', placeholder='Confirm password')
+        .form-group
+            button.btn.btn-primary(type='submit') Update Password

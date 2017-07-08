@@ -1,0 +1,150 @@
+extends layout
+block content
+  if (!user)
+     .ui.raised.very.padded.text.container.segment
+       <img class="ui medium image" src="/images/agpLogo.png">
+       .ui.warning.message
+         i.close.icon
+         .header
+            | You must register before you can do that!
+          |   Visit our registration page, then try again      
+        .ui.header
+        .ui.steps
+          a.step(href="/login")
+            i.sign.in.icon
+            .content
+              .title Sign in
+              .description Sign Into your Account.
+          a.step(href="/register")
+            i.add.user.icon
+            .content
+              .title Sign Up
+              .description Sign up for an Account.
+  if (user)
+    if (user.username == "admin")
+      .right.floated.left.aligned.six.wide.column
+        .ui.segment
+          .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+        .ui.top.attached.tabular.menu
+          a.active.item(href="/") Home
+          a.item(href="/showallusers") Show All Users
+          a.item(href="/removeusers") Remove Users
+          a.item(href="/showinvoices") Show Invoices
+          a.item(href="/selectiveshifts") Show Shifts With Site Name
+          a.item(href="/sendText") Send Reminders
+          a.item(href="/logout") Logout
+          .item 
+        .ui.bottom.attached.active.tab.segment
+          | Hi <strong>#{user.firstname}</strong>, what would you like to do today?
+          form(role='form', action="/addholiday", method="post", style='max-width: 50%;')
+              table#publicTable
+                tr 
+                  th Date
+                  th Public Holiday
+                tbody
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0",  required='' autofocus='')
+                    td
+                      .form-group
+                          input.form-control(readonly name="holidaydescription" value="New Year")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                      input.form-control(readonly name="holidaydescription" value="Australia Day")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Labour Day")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Good Friday")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Holy Saturday")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Easter Sunday")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Easter Monday")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Anzac Day")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Queen's Birthday")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="AFL Grand Final")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Melbourne Cup Day")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Christmas")
+                  tr  
+                    td            
+                      .form-group
+                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                    td
+                      .form-group
+                        input.form-control(readonly name="holidaydescription" value="Boxing Day")
+              br
+              button.btn.btn-default(type='submit') Submit
+    else
+      .right.floated.left.aligned.six.wide.column
+        .ui.segment
+          .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+      .ui.top.attached.tabular.menu
+        a.active.item(href="/") Home
+        a.item(href="/shifts") Add Shifts
+        a.item(href="/all") Show All Shifts
+        a.item(href="/remove") Remove Shifts
+        a.item(href="/logout") Logout
+        .item 
+      .ui.bottom.attached.active.tab.segment 
+        | Hi <strong>#{user.firstname}</strong>, what would you like to do today?

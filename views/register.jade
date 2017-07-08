@@ -1,0 +1,84 @@
+extends layout
+block scripts
+    script.
+        function abnValidate(value){
+          if(value.length != 11 || isNaN(parseInt(value))){
+              console.log("returning False");
+              return false;        
+          }
+          var weighting= [10,1,3,5,7,9,11,13,15,17,19];
+          var tally = (parseInt(value[0])-1)*weighting[0];
+          for (var i=1; i<value.length; i++){
+            tally += (parseInt(value[i])* weighting[i]);
+          }
+          return tally % 89 == 0;
+        }
+
+        $(document).ready(function(){
+          abn = $('.abnnumber').val();
+          console.log(abn);
+          $("form").change(function(){
+            if (abnValidate(abn) == false){
+              $("form").submit(function(e){
+                 e.preventDefault();
+              });
+              console.log("PREVENTED");
+            }
+            else{
+              console.log("submitted")
+            }
+          })
+          });
+
+block content
+  .container
+    .ui.center.aligned.segment
+        .ui.center.aligned.header <img class="ui medium image" src="/images/agpLogo.png">
+        - if (message)
+            .alert.alert-danger #{message}
+        .ui.center.aligned.header(style="color: #3385ff;") Enter Your Information Below
+        br
+        br
+        .ui.form
+          form(role='form', action="/register",method="post", style="max-width: 50%; margin-left: 25%;")
+            .two.fields
+              .field
+                h5 Username
+                .form-group
+                  input.form-control(type='text', name="username", placeholder='Enter Username' ,pattern="[a-zA-Z0-9]+" required='' autofocus='')
+              .field
+                h5 Password
+                .form-group
+                  input.form-control(type='password', name="password", placeholder='Password' required='')
+            .two.fields
+              .field
+                h5 First Name
+                .form-group
+                  input.form-control(type='text', name="firstname", placeholder='First Name',pattern="^[a-z ,.'-]+$" required='')
+              .field
+                h5 Last Name      
+                .form-group
+                  input.form-control(type='text', name="lastname", placeholder='Last Name',pattern="^[a-z ,.'-]+$" required='')
+            .two.fields
+              .field
+                h5 Phone Number      
+                .form-group
+                  input.form-control(type='text', name="phonenumber", placeholder='Mobile Number e.g 0423123456', pattern="^0[4]\\d{8}$" required='')        
+              .field
+                h5 Email Address
+                .form-group
+                  input.form-control(type='email', name="email", placeholder='Personal Email' required='')
+            h4.ui.dividing.header(style="color: #3385ff;") License and ABN Information
+            .two.fields
+              .field
+                h5 ABN number
+                .form-group
+                  input.form-control(type='text', name="abnnumber", class="abnnumber", placeholder='ABN' required='')
+              .field
+                h5 Security License Number 
+                .form-group
+                input.form-control(type='text', name="securitylicense", placeholder='License Number eg. 123-456-78S', pattern='\\d{8}\\w' required='')      
+            button.btn.btn-default(type='submit') Submit 
+            &nbsp;
+            a(href='/')
+              button.btn.btn-primary(type="button") Cancel

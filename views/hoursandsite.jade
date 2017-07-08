@@ -1,0 +1,66 @@
+extends layout
+block scripts
+    script.
+        function hide(){
+            $(".clickable").click(function() {
+                $(this).closest("tr").next().slideToggle();
+            });
+        };
+        $(document).ready( function(){
+            hide();
+        });       
+block content    
+    if (!users)
+     .ui.raised.very.padded.text.container.segment
+       <img class="ui medium image" src="/images/agpLogo.png">
+       .ui.warning.message
+         i.close.icon
+         .header
+            | You must register before you can do that!
+          |   Visit our registration page, then try again      
+        .ui.steps
+          a.step(href="/login")
+            i.sign.in.icon
+            .content
+              .title Sign in
+              .description Sign Into your Account.
+          a.step(href="/register")
+            i.add.user.icon
+            .content
+              .title Sign Up
+              .description Sign up for an Account.
+    if (users)
+      .right.floated.left.aligned.six.wide.column
+        .ui.segment
+          .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+        .ui.top.attached.tabular.menu
+          a.item(href="/") Home
+          a.item(href="/showallusers") Show All Users
+          a.item(href="/removeusers") Remove Users
+          a.item(href="/showinvoices") Show Invoices
+          a.active.item(href="/selectiveshifts") Show Shifts With Site Name
+          a.item(href="/sendText") Send Reminders
+          a.item(href="/logout") Logout
+          .item 
+        .ui.bottom.attached.active.tab.segment
+            p You are currently logged in as <strong>Admin</strong>
+            table.clickable
+                - each user in users
+                    tr(bgcolor='#3399ff')
+                        th 
+                            font(color="white") Shift ID
+                        th
+                            font(color="white") Date
+                        th 
+                            font(color="white") Location
+                        th
+                            font(color="white") Hours
+                    tr
+                    - each shift in user.shifts
+                        td= shift._id
+                        td= shift.start_date
+                        td= shift.location
+                        td= shift.hours
+                        tr.shift
+            a(href='/')
+                button.btn.btn-primary(type="button") Back

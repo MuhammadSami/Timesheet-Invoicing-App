@@ -1,0 +1,84 @@
+extends layout
+block scripts
+    script.
+        function hide(){
+            $(".clickable").click(function() {
+                $(this).closest("tr").next().slideToggle();
+            });
+        };
+        $(document).ready( function(){
+            hide();
+        });
+      
+block content    
+    if (!users)
+     .ui.raised.very.padded.text.container.segment
+       <img class="ui medium image" src="/images/agpLogo.png">
+       .ui.warning.message
+         i.close.icon
+         .header
+            | You must register before you can do that!
+          |   Visit our registration page, then try again      
+        .ui.header Aus Group Protective
+        .ui.steps
+          a.step(href="/login")
+            i.sign.in.icon
+            .content
+              .title Sign in
+              .description Sign Into your Account.
+          a.step(href="/register")
+            i.add.user.icon
+            .content
+              .title Sign Up
+              .description Sign up for an Account.
+    if (users)
+      .right.floated.left.aligned.six.wide.column
+        .ui.segment
+          .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+        .ui.top.attached.tabular.menu
+          a.item(href="/") Home
+          a.item(href="/showallusers") Show All Users
+          a.item(href="/removeusers") Remove Users
+          a.item(href="/showinvoices") Show Invoices
+          a.item(href="/selectiveshifts") Show Shifts With Site Name
+          a.active.item(href="/sendText") Send Reminders
+          a.item(href="/logout") Logout
+          .item 
+        .ui.bottom.attached.active.tab.segment
+            p You are currently logged in as <strong>Admin</strong>
+            table.clickable
+                - each user in users
+                    tr(bgcolor='#751aff')
+                        th
+                            font(color="white") First Name
+                        th
+                            font(color="white") Last Name
+                        th
+                            font(color="white") Abn Number
+                        th
+                            font(color="white") Security License
+                        th
+                            font(color="white") Phone Number
+                        th
+                            font(color="white") Email
+                        th 
+                            font(color="white") Checkbox
+                    tr
+                        td= user.firstname
+                        td= user.lastname
+                        td= user.abnnumber
+                        td= user.securitylicense
+                        td= user.phonenumber
+                        td= user.email
+                        td
+                            input(type='checkbox', name='reminder')
+            h4 Write the text message you want to send.
+            form(role='form', action="/sendReminder", method="post", style='max-width: 400px;')
+                .form-group
+                    textarea.form-control(type='text', name="message", placeholder='Enter Message Here', required=' ' ,autofocus='',style='height:200px;')
+                br
+                a(href='/')
+                    button.btn.btn-primary(type="button") Back
+                &nbsp;
+                a(href='/sendreminder')
+                    button.btn.btn-primary(type="submit") Send Reminder            

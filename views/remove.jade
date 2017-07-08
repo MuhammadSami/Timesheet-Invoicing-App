@@ -1,0 +1,84 @@
+extends layout
+block scripts
+    script.
+        function check_box() {
+            $('input:checkbox').change(function(){
+                if ($(this).is(':checked')) {
+                    console.log('checked');
+                    console.log($("table").find("tbody td").eq(0).children().first());               
+                }else{
+                    console.log('unchecked');
+                }
+            });
+        };
+        $(document).ready( function(){
+            check_box(); 
+        });
+block content 
+    if (!user)
+     .ui.raised.very.padded.text.container.segment
+       <img class="ui medium image" src="/images/agpLogo.png">
+       .ui.warning.message
+         i.close.icon
+         .header
+            | You must register before you can do that!
+          |   Visit our registration page, then try again      
+        .ui.header Aus Group Protective
+        .ui.steps
+          a.step(href="/login")
+            i.sign.in.icon
+            .content
+              .title Sign in
+              .description Sign Into your Account.
+          a.step(href="/register")
+            i.add.user.icon
+            .content
+              .title Sign Up
+              .description Sign up for an Account.
+    if (user)  
+      .right.floated.left.aligned.six.wide.column
+        .ui.segment
+          .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+        | You are currently logged in as <strong>#{user.username}</strong>
+      .ui.top.attached.tabular.menu
+        a.item(href="/") Home
+        a.item(href="/shifts") Add Shifts
+        a.item(href="/all") Show All Shifts
+        a.active.item(href="/remove") Remove Shifts
+        a.item(href="/logout") Logout
+        .item 
+      .ui.bottom.attached.active.tab.segment     
+        //p all your shifts are #{user.shifts}
+        //each users in user.shifts
+        <table>
+        <tr>
+        <th>Shift Id</th>
+        <th>Date</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th>Location</th>
+        <th>Hours</th>
+        <th>Hourly rate</th>
+        <th> Pay </th>
+        <th> checkbox </th>
+        </tr>
+        <tr>
+        - each users in user.shifts
+            td#userID= users._id
+            td= users.start_date
+            td= users.start_time
+            td= users.end_time
+            td= users.location
+            td= users.hours
+            td= users.hourly_rate
+            td= users.amount
+            <td>  <input type='checkbox' name="remove"></td>
+            </tr>
+        </table>
+        form(role='form', action="/removeshift",method="post", style='max-width: 300px;')
+            .form-group
+                input.form-control(type='text', name="shift_id", placeholder='Enter Shift Id' autofocus='')
+            button.btn.btn-default(type='submit') Remove Selected 
+            &nbsp;
+            a(href='/')
+                button.btn.btn-primary(type="button") Cancel
