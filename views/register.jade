@@ -1,34 +1,4 @@
 extends layout
-block scripts
-    script.
-        function abnValidate(value){
-          if(value.length != 11 || isNaN(parseInt(value))){
-              console.log("returning False");
-              return false;        
-          }
-          var weighting= [10,1,3,5,7,9,11,13,15,17,19];
-          var tally = (parseInt(value[0])-1)*weighting[0];
-          for (var i=1; i<value.length; i++){
-            tally += (parseInt(value[i])* weighting[i]);
-          }
-          return tally % 89 == 0;
-        }
-
-        $(document).ready(function(){
-          abn = $('.abnnumber').val();
-          console.log(abn);
-          $("form").change(function(){
-            if (abnValidate(abn) == false){
-              $("form").submit(function(e){
-                 e.preventDefault();
-              });
-              console.log("PREVENTED");
-            }
-            else{
-              console.log("submitted")
-            }
-          })
-          });
 
 block content
   .container
@@ -54,11 +24,11 @@ block content
               .field
                 h5 First Name
                 .form-group
-                  input.form-control(type='text', name="firstname", placeholder='First Name',pattern="^[a-z ,.'-]+$" required='')
+                  input.form-control(type='text', name="firstname", placeholder='First Name',pattern="^[a-zA ,.'-]+$" required='')
               .field
                 h5 Last Name      
                 .form-group
-                  input.form-control(type='text', name="lastname", placeholder='Last Name',pattern="^[a-z ,.'-]+$" required='')
+                  input.form-control(type='text', name="lastname", placeholder='Last Name',pattern="^[a-zA ,.'-]+$" required='')
             .two.fields
               .field
                 h5 Phone Number      
@@ -73,12 +43,12 @@ block content
               .field
                 h5 ABN number
                 .form-group
-                  input.form-control(type='text', name="abnnumber", class="abnnumber", placeholder='ABN' required='')
+                  input.form-control(type='text', name="abnnumber", class="abnnumber", placeholder='ABN', pattern='\\d{11}' required='')
               .field
                 h5 Security License Number 
                 .form-group
                 input.form-control(type='text', name="securitylicense", placeholder='License Number eg. 123-456-78S', pattern='\\d{8}\\w' required='')      
             button.btn.btn-default(type='submit') Submit 
             &nbsp;
-            a(href='/')
+            a(href='/login')
               button.btn.btn-primary(type="button") Cancel

@@ -5,7 +5,8 @@ block scripts
         function add_row(){
           rowIndex ++;
           
-          var newRow = '<tr><td><div class="form-group"><input type="date" name="start_date" placeholder="select date" required="" autofocus="" class="form-control start_date"></div></td>"'+
+          var newRow = '<tr><td><div class="form-group"><input type="date" id="start_date'+rowIndex+'" name="start_date" placeholder="select date" required="" autofocus="" class="form-control start_date"></div></td>"'+
+                      '<td><div class="form-group"><input type="date" id="end_date'+rowIndex+'" name="end_date" placeholder="select date" required="" autofocus="" class="form-control end_date"></div></td>"'+
                       '<td><div class="form-group"><input type="text" id="start_time'+rowIndex+'" name="start_time" placeholder="e.g 08:30" pattern="\\d{02}:\\d{02}" required="" class="form-control start_time"></div></td>"'+
                       '<td><div class="form-group"><input type="text" id="end_time'+rowIndex+'"name="end_time" placeholder="e.g 17:30" pattern="\\d{02}:\\d{02}" required="" class="form-control end_time"></div></td>"'+
                       '<td colspan="3"><div class="form-group"><input type="text" name="location" placeholder="570 Bourke Street" required="" class="form-control"></div></td>"'+
@@ -20,45 +21,39 @@ block scripts
         function remove_row(){
           $('#shiftTable  tr:last').remove();
         }
-        function calculateTime(start_time, end_time, hours_worked, amount, hourly) {
+        function calculateTime(sDate, eDate, start_time, end_time, hours_worked, amount, hourly) {
           //get values
           var valuestart = $(start_time).val();
           var valuestop = $(end_time).val();
-            //calculate hours for user    
-          var time1 = $(start_time).val().split(':'), time2 = $(end_time).val().split(':');
-          var hours1 = parseInt(time1[0], 10), 
-             hours2 = parseInt(time2[0], 10),
-             mins1 = parseInt(time1[1], 10),
-             mins2 = parseInt(time2[1], 10);
-          var hours = hours2 - hours1, mins = 0;
-          if(hours < 0) hours = 24 + hours;
-          if(mins2 >= mins1) {
-                mins = mins2 - mins1;
-          }
-         else {
-            mins = (mins2 + 60) - mins1;
-            hours--;
-          }
-          mins = mins / 60;
-          hours += mins;
-          hours = hours.toFixed(2);
-          $(hours_worked).val(hours);
+          var startDate = $(sDate).val();
+          var endDate = $(eDate).val();
+          //calculate hours for user    
+          var timeStart = new Date(startDate+" "+valuestart).getTime();
+          var timeEnd = new Date(endDate+" "+valuestop).getTime();
+          var hourDiff = timeEnd - timeStart; //in ms
+          //https://msdn.microsoft.com/en-us/library/aa239571(v=vs.60).aspx
+          //https://www.google.com.au/search?q=how+to+get+elapsed+hours+of+the+datetime+entered&oq=how+to+get+elapsed+hours+of+the+datetime+entered&aqs=chrome..69i57.12294j0j4&sourceid=chrome&ie=UTF-8#q=how+to+get+elapsed+hours+of+the+date+time+entered+javascript
+          //https://stackoverflow.com/questions/20839874/difference-between-two-dates-in-minute-hours-javascript
+          // var secDiff = hourDiff / 1000; //in s
+          // var minDiff = hourDiff / 60 / 1000; //in minutes
+          // var hDiff = hourDiff / 3600 / 1000; //in hours
+          var hourMin= hourDiff/3600000;
+          $(hours_worked).val(hourMin);
 
           rate = $(hourly).val();
           console.log("Rate : "+rate);
           var hours_w = $(hours_worked).val();
           var pay = rate * hours_w;
           $(amount).val(pay);
-          console.log("pay :"+pay);
         }
-        function calculateSpecialPay(Sdate, hourly){
+        function calculateSpecialPay(Sdate, Edate, hourly){
           
           //Calculate pay for user based on field selected #todo make it based on Public holiday dates   
           var vic_holidays = ["2017-01-01","2017-01-26","2017-04-25","2017-12-25","2017-12-26"];
-          var public_holiday= $(Sdate).val();
-          console.log("DATE IS :"+public_holiday);
+          var date1= $(Sdate).val();
+          var date2= $(Edate).val();
           for (i=0; i<vic_holidays.length; i++){
-            if (public_holiday === vic_holidays[i]){
+            if (date1 || date2 === vic_holidays[i]){
                 $(hourly).val('30');
                 break;
             }
@@ -75,9 +70,10 @@ block scripts
             var amount = "#amount"+rowIndex;
             var hourly = "#hourly_rate"+rowIndex;
             var start_date= "#start_date"+rowIndex;
+            var end_date = "#end_date"+rowIndex;
             $("form").change(function(){
-              calculateTime(start, end, hours, amount, hourly);
-              calculateSpecialPay(start_date, hourly);
+              calculateTime(start_date, end_date, start, end, hours, amount, hourly);
+              calculateSpecialPay(start_date, end_date, hourly);
               // sum all totals
               var sum = 0;
               
@@ -88,7 +84,7 @@ block scripts
               });
 
               // show values in netto, steuer, brutto fields
-              $("#total").val(sum.toFixed(2));
+              $("#totalpay").val(sum.toFixed(2));
               var sum1 = 0;
               $(".hours").each(function () {
                   if (!isNaN(this.value) && this.value.length != 0) {
@@ -106,8 +102,11 @@ block scripts
               var amount = "#amount"+rowIndex;
               var hourly = "#hourly_rate"+rowIndex;
               var start_date= "#start_date"+rowIndex;
+              var end_date = "#end_date"+rowIndex;
+              console.log("Start time is : "+start+"\n end time is: "+end);
+              console.log("row index is : "+rowIndex);
               $("form").change(function(){
-                calculateTime(start, end, hours, amount, hourly);
+                calculateTime(start_date, end_date, start, end, hours, amount, hourly);
                 calculateSpecialPay(start_date, hourly);
                 // sum all totals
                 var sum = 0;
@@ -117,7 +116,7 @@ block scripts
                     }
                 });
                 // show values in netto, steuer, brutto fields
-                $("#total").val(sum.toFixed(2));
+                $("#totalpay").val(sum.toFixed(2));
                 var sum1 = 0;
                 $(".hours").each(function () {
                     if (!isNaN(this.value) && this.value.length != 0) {
@@ -132,7 +131,7 @@ block scripts
 
               
             });
-
+            
 
             $(document).on('click', '#removerow', function() {
               $(this).parents('tr').remove();
@@ -154,7 +153,7 @@ block scripts
                         pos=-1*sum;
                     }
                 });
-                $("#total").val(pos.toFixed(2));              
+                $("#totalpay").val(pos.toFixed(2));              
                 
             });
         });
@@ -199,7 +198,8 @@ block content
         form(role='form', action="/addshift", method="post", style='max-width: 80%;')
           table#shiftTable
             tr 
-              th Date
+              th Start Date
+              th End Date
               th Start Time
               th End Time
               th(colspan="3") Location  (e.g 570 Bourke Street)
@@ -212,6 +212,9 @@ block content
                 td            
                   .form-group
                       input.form-control(type="date", name="start_date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                td            
+                  .form-group
+                      input.form-control(type="date", name="end_date", placeholder='select date', class="end_date", id="end_date0" required='' autofocus='')                
                 td
                   .form-group
                     input.form-control(type='text', id="start_time0",class="start_time", name="start_time", placeholder='e.g 08:30' , pattern='\\d{02}:\\d{02}' required='')
@@ -238,14 +241,14 @@ block content
                       i.remove.icon 
                       | Remove
                 tr
-                  th(colspan="6") Total
+                  th(colspan="7") Total
                   td 
                     .form-group
                       input.form-control(readonly type='number', id="total_hours",name="total_hours", min="0" )
                   td
                   td 
                     .form-group
-                      input.form-control(readonly type='number', id="total",name="total",min="0" )
+                      input.form-control(readonly type='number', id="totalpay",name="totalpay",min="0" )
                   td
           a(id="add_row" onclick='add_row();')
             .ui.green.labeled.icon.button
@@ -253,7 +256,7 @@ block content
               | Add more shifts
           
           br
-          button.btn.btn-default(type='submit') Submit
+          button.btn.btn-default(type='submit' id="submit") Submit
           &nbsp;
           a(href='/')
             button.btn.btn-primary(type="button") Back

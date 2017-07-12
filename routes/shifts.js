@@ -4,6 +4,7 @@ var Account = require('../models/account');
 var flash = require('connect-flash');
 var nodemailer = require('nodemailer');
 var shift_controller = require('../controllers/shift_logic');
+var walid_shift_controller = require("../controllers/walid-shift");
 var router = express.Router();
 
 //get public holiday
@@ -26,6 +27,7 @@ router.get('/shifts', function (req, res) {
 
 router.post('/addshift', shift_controller.add_shift, function(req, res){
     res.send({user: req.user});
+
 });
 
 
@@ -37,6 +39,8 @@ router.post('/removeshift', shift_controller.remove_shift, function(req, res){
     res.send({user: req.user});
 });
 
+// Search Shifts with a Date Range
+router.get('/shifts/date',shift_controller.shifts_within_range);
 
 
 // Edit Shifts

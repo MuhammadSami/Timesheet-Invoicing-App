@@ -1,0 +1,38 @@
+h3 Hey #{user.firstname} 
+p This is an invoice for the shifts that you have currently submitted. 
+table(style='border: 1px solid black; border-collapse:collapse; width: 80%;')
+  tr(style='border: 1px solid black;')
+    th Start Date
+    th End Date
+    th Start Time
+    th End Time
+    th Location
+    th Hour Done
+    th Hourly Rate
+    th Pay
+    each shift in user.shifts 
+      tr(style='border: 1px solid black; border-collapse:collapse;')
+        td #{shift.start_date}
+        td #{shift.end_date}
+        td #{shift.start_time}
+        td #{shift.end_time}
+        td #{shift.location}
+        td #{shift.hours}
+        td #{shift.hourly_rate}
+        td #{shift.amount}
+      tr(style='border: 1px solid black; border-collapse:collapse;')
+        th(colspan="5") Total
+        td #{shift.totalhours}
+        td
+        td #{shift.totalpay}
+h4 Kind regards,
+h5 Muhammad Majeed
+h5
+  | Operations Manager
+  | AusGroup Protective Services
+a(href='www.agprotective.com.au')  www.agprotective.com.au
+h5
+  | M: 0421 284 127
+  | P: 03 9029 4318
+  | E: info@agprotective.com.au
+  | Mailing Address: P.O Box 88 Coburg, 3058, Victoria

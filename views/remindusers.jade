@@ -61,8 +61,6 @@ block content
                             font(color="white") Phone Number
                         th
                             font(color="white") Email
-                        th 
-                            font(color="white") Checkbox
                     tr
                         td= user.firstname
                         td= user.lastname
@@ -70,15 +68,13 @@ block content
                         td= user.securitylicense
                         td= user.phonenumber
                         td= user.email
-                        td
-                            input(type='checkbox', name='reminder')
             h4 Write the text message you want to send.
-            form(role='form', action="/sendReminder", method="post", style='max-width: 400px;')
+            form(role='form', action="/sendText", method="post", style='max-width: 400px;')
                 .form-group
                     textarea.form-control(type='text', name="message", placeholder='Enter Message Here', required=' ' ,autofocus='',style='height:200px;')
                 br
                 a(href='/')
                     button.btn.btn-primary(type="button") Back
                 &nbsp;
-                a(href='/sendreminder')
-                    button.btn.btn-primary(type="submit") Send Reminder            
+                a(href='/sendText')
+                    button.btn.btn-primary(type="submit") Send Reminder to all Users            

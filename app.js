@@ -9,9 +9,17 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
 var async = require('async');
+var jadeCompiler = require('jade-compiler');
+var jade = require('jade');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var flash = require('express-flash');
+// Twilio Credentials 
+var accountSid = 'AC0c596227fab1b16327d5f32f0be17477'; 
+var authToken = 'ddf92087fcb254eaad49b938770d4a69'; 
+ 
+//require the Twilio module and create a REST client 
+var client = require('twilio')(accountSid, authToken); 
 var LocalStrategy = require('passport-local').Strategy;
 
 var routes = require('./routes/index');

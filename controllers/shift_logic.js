@@ -4,47 +4,78 @@ var flash = require('connect-flash');
 var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
+var jade = require('jade');
+var jadeCompiler = require('jade-compiler');
+var fs = require('fs');
 var Account = require('../models/account');
-var shift_controller = require('../controllers/shift_logic');
+var email = require('./email');
 var router = express.Router();
 
-// Create an Add Shift 
+
+
+/*
+    Add Shifts
+    - get an array of shifts. { shifts: [ {} , {} , {} ]}
+    - add each element in the array to the user shifts.
+    - save to database.
+    - send user email using a template.
+    
+*/
 exports.add_shift = function(req, res){
-    console.log(req.body)
-     Account.findOne({ 'username': req.user.username }, function(err, user) {
-            // if there are any errors, return the error before anything else
-            if (err){
-                return done(err);
-            };
-
-            if(req.body.start_date instanceof Array) {
-                for(var x = 0; x < req.body.start_date.length; x++){
-                    user.shifts.push({
-                        start_date: req.body.start_date[x], start_time: req.body.start_time[x], end_time: req.body.end_time[x], 
-                        location: req.body.location[x], hours: req.body.hours[x], hourly_rate: req.body.hourly_rate[x],
-                        amount: req.body.amount[x],total: req.body.total[x]
-                    });
-                }
-            } else{
+    Account.findOne({'username': req.user.username}, function(err, user){
+        if (err){
+            console.log(err); 
+            return err;
+        }
+        
+        console.log(req.body);
+        
+       
+       
+       
+        if(req.start_date instanceof Array) {
+            for(var x = 0; x < req.body.start_date.length; x++){
                 user.shifts.push({
-                    start_date: req.body.start_date, start_time: req.body.start_time, end_time: req.body.end_time, 
-                    location: req.body.location, hours: req.body.hours, hourly_rate: req.body.hourly_rate,
-                    amount: req.body.amount,total: req.body.total
+                    start_date: req.body.start_date[x], end_date: req.body.end_date[x] ,start_time: req.body.start_time[x], end_time: req.body.end_time[x], 
+                    location: req.body.location[x], hours: req.body.hours[x], hourly_rate: req.body.hourly_rate[x],
+                    amount: req.body.amount[x],total: req.body.total[x],status: "PENDING", totalpay: req.body.totalpay, totalhours: req.body.total_hours
                 });
-            }            
 
-            user.save(function (err) {
-                if (err){
-                    return handleError(err);
-                } 
-                console.log('Success!');
+            }
+        } else {
+            user.shifts.push({
+                start_date: req.body.start_date, end_date: req.body.end_date, start_time: req.body.start_time, end_time: req.body.end_time, 
+                location: req.body.location, hours: req.body.hours, hourly_rate: req.body.hourly_rate,
+                amount: req.body.amount,total: req.body.total,status: "PENDING", totalpay: req.body.totalpay, totalhours: req.body.total_hours
             });
-            req.flash('success','Your Shifts have been added to your account.');
-            res.redirect('/shifts');
-     });
+        }
+        
+        user.save(function (err) {
+            if (err){
+                return err;
+            } 
+
+        req.flash('success',' Your shifts have been successfully added to your account!');
+        res.redirect("/shifts");
+        });
+        
+        var array = user.shifts;
+        var last_element = array[array.length-1]; 
+        var stringify = JSON.stringify(last_element);
+        var obj = JSON.parse(stringify);
+        console.log(obj.start_date, obj._id);
+        console.log(obj);
+        var new_shifts = [obj,user];
+        
+        
+        // Email Integration
+        email.sendHTMLEmail(req.user.email,'Invoice from Aus Group Protective Invoice',new_shifts,"invoice");
+        req.flash('success','An Invoice has been sent to your account');
+    });    
 };
 
 
+// View all shifts
 exports.all_shifts = function(req,res){
         Account.find({'username': req.user.username }, function(err, user) {
         // if there are any errors, return the error before anything else
@@ -106,3 +137,20 @@ exports.add_holiday = function(req, res){
 });
 };
 // Export Functions.
+
+
+
+// Find shifts within two date range.
+
+exports.shifts_within_range = function(req,res){
+    var first_date = req.body.first_date;
+    var second_date = req.body.second_date;
+    if(second_date < first_date){
+        // Should be validated on the client side as well.
+        // Respond with an error.
+    }
+    
+    //Account.find({ shifts:[]}).where
+    
+    
+};
