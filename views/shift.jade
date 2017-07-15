@@ -64,6 +64,25 @@ block scripts
           }
         }
         $(document).ready(function(){
+        
+         // Global Variable
+         
+          var holidays;
+          
+           $.get( "/holidays/", function( data ) {
+              
+              holidays = data;
+              console.log("received holidays :)");
+              console.log(holidays);
+            });
+            
+            
+            
+            
+            
+            
+            
+            
             var start = "#start_time"+rowIndex;
             var end = "#end_time"+rowIndex;
             var hours = "#hours"+rowIndex;
@@ -73,7 +92,7 @@ block scripts
             var end_date = "#end_date"+rowIndex;
             $("form").change(function(){
               calculateTime(start_date, end_date, start, end, hours, amount, hourly);
-              calculateSpecialPay(start_date, end_date, hourly);
+              //calculateSpecialPay(start_date, end_date, hourly);
               // sum all totals
               var sum = 0;
               
@@ -107,7 +126,7 @@ block scripts
               console.log("row index is : "+rowIndex);
               $("form").change(function(){
                 calculateTime(start_date, end_date, start, end, hours, amount, hourly);
-                calculateSpecialPay(start_date, hourly);
+                //calculateSpecialPay(start_date, hourly);
                 // sum all totals
                 var sum = 0;
                 $(".amount").each(function () {
@@ -157,7 +176,32 @@ block scripts
                 
             });
         });
-     
+        function CalculatePayOnDate(){
+            if(holidays == null){
+              // Validate to check if receieved values.
+            }
+            var d1 = $('.start_date').val();
+            var d2 = $('.end_date').val();
+            if (d1<=d2){
+              for (var i=0; i<vic_holidays.length; i++){
+                  if (d1 && d2 == vic_holidays[i]){
+                  	console.log("calculate pay normally with 30 dollars");
+                  }else if (d1 || d2 === vic_holidays[i]){
+                  				console.log("date1 or date2 matched. Calculate hours and pay");
+                  				if (d1 === vic_holidays[i]){
+                    					console.log("date 1 get hours and  calculate public holiday for these hours pay");
+                            }
+                          else if (d2 === vic_holidays[i]){
+                            	console.log("date2 get hours and calc pay ");
+                            }
+                  }else{
+                    console.log("NOT MATCH");
+                  }
+                }
+            	}else{
+              	console.log("start date cannot be after end date");
+              }
+          	}
         
 block content
   if (!user)
@@ -186,16 +230,17 @@ block content
           .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
       .ui.top.attached.tabular.menu
         a.item(href="/") Home
-        a.active.item(href="/shifts") Add Shifts
-        a.item(href="/all") Show All Shifts
-        a.item(href="/remove") Remove Shifts
+        a.active.item(href="/pages/add") Add Shifts
+        a.item(href="/pages/all") Show All Shifts
+        a.item(href="/pages/remove") Remove Shifts
         a.item(href="/logout") Logout
         .item 
       .ui.bottom.attached.active.tab.segment 
         .container
         p.lead Hi <strong>#{user.username}</strong>, please add your shift below.
         br
-        form(role='form', action="/addshift", method="post", style='max-width: 80%;')
+        //form#holiday(action="/holidays/", method="get")
+        form(role='form', action="/shifts/add", method="post", style='max-width: 80%;')
           table#shiftTable
             tr 
               th Start Date
@@ -229,9 +274,7 @@ block content
                     input.form-control(readonly type='number',id="hours0",class="hours", name='hours', placeholder='0' required='')
                 td
                   .form-group
-                    select(name='hourly_rate', class="hourly_rate" ,id="hourly_rate0",required='' )
-                      option(value='22') Base Pay
-                      option(value='30') Public Holiday
+                    input.form-control(readonly type='number',id="hourly_rate0",class="hourly_rate", name='hourly_rate', value="22",placeholder='0' required='')
                 td
                   .form-group
                     input.form-control(readonly type='number',id="amount0",class="amount", name="amount" required='')
@@ -260,10 +303,3 @@ block content
           &nbsp;
           a(href='/')
             button.btn.btn-primary(type="button") Back
-          table(style="display:none")
-            tr
-              th Date      
-            tr
-              - each shift in user.public_holiday                
-                  td= shift.date
-                  tr 

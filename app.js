@@ -1,5 +1,6 @@
 // dependencies
 var express = require('express');
+var fs = require('fs');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -22,19 +23,30 @@ var authToken = 'ddf92087fcb254eaad49b938770d4a69';
 var client = require('twilio')(accountSid, authToken); 
 var LocalStrategy = require('passport-local').Strategy;
 
+
+// Route Resource
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var shift_routes = require('./routes/shifts');
+var pages = require('./routes/pages');
+var holidays = require('./routes/holidays');
+var shifts = require('./routes/shifts');
+
 
 var app = express();
 
-// view engine setup
+
+// View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
+// Public
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(logger('dev'));
+
+// Logging Morgan
+var accessLogStream = fs.createWriteStream(path.join(__dirname + "/utilities/logs/", 'access.log'), {flags: 'a'})
+app.use(logger('dev',{stream: accessLogStream}));
+
+// JSON
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -43,6 +55,8 @@ app.use(require('express-session')({
     resave: false,
     saveUninitialized: false
 }));
+
+// Passport
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -54,10 +68,16 @@ app.use(function(req, res, next){
     next();
 });
 
+
 // Routes
 app.use('/', routes);
-app.use('/',shift_routes);
+app.use('/pages/',pages);
 app.use('/',users);
+app.use('/shifts',shifts);
+app.use('/holidays',holidays);
+
+
+
 
 // passport config
 var Account = require('./models/account');

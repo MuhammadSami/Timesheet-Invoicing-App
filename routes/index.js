@@ -13,9 +13,7 @@ router.get('/',  function (req, res) {
  res.render('index', { title:'Agp Protective', user : req.user });
 });
 
-router.post('/addholiday', shift_controller.add_holiday, function(req, res){
-    res.send({user: req.user});
-});
+
 
 router.get('/register', function(req, res) {
     res.render('register', {title: 'Register User' });
@@ -111,13 +109,13 @@ router.post('/forgot', function(req, res, next) {
         port: 465,
         secure: true,
         auth: {
-          user: 'm.samidevs@gmail.com',
-          pass: "sjajxqmyuzlapwhb"
+          user: 'pathfinderprotective@gmail.com',
+          pass: "vmmsgfppemfxgbsj"
         }
       });
       var mailOptions = {
         to: user.email,
-        from: 'm.samidevs@gmail.com',
+        from: 'pathfinderprotective@gmail.com',
         subject: 'Password Reset',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -173,13 +171,13 @@ router.post('/reset/:token', function(req, res) {
         port: 465,
         secure: true,
         auth: {
-          user: 'm.samidevs@gmail.com',
-          pass: "sjajxqmyuzlapwhb"
+          user: 'pathfinderprotective@gmail.com',
+          pass: "vmmsgfppemfxgbsj"
         }
       });
       var mailOptions = {
         to: user.email,
-        from: 'm.samidevs@gmail.com',
+        from: 'pathfinderprotective@gmail.com',
         subject: 'Your password has been changed',
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'

@@ -42,9 +42,9 @@ block content
         | You are currently logged in as <strong>#{user.username}</strong>
       .ui.top.attached.tabular.menu
         a.item(href="/") Home
-        a.item(href="/shifts") Add Shifts
-        a.item(href="/all") Show All Shifts
-        a.active.item(href="/remove") Remove Shifts
+        a.item(href="/pages/add") Add Shifts
+        a.item(href="/pages/all") Show All Shifts
+        a.active.item(href="/pages/remove") Remove Shifts
         a.item(href="/logout") Logout
         .item 
       .ui.bottom.attached.active.tab.segment     
@@ -75,7 +75,7 @@ block content
             <td>  <input type='checkbox' name="remove"></td>
             </tr>
         </table>
-        form(role='form', action="/removeshift",method="post", style='max-width: 300px;')
+        form(role='form', action="/shifts/remove",method="post", style='max-width: 300px;')
             .form-group
                 input.form-control(type='text', name="shift_id", placeholder='Enter Shift Id' autofocus='')
             button.btn.btn-default(type='submit') Remove Selected 

@@ -4,46 +4,30 @@ var Account = require('../models/account');
 var flash = require('connect-flash');
 var nodemailer = require('nodemailer');
 var shift_controller = require('../controllers/shift_logic');
-var walid_shift_controller = require("../controllers/walid-shift");
 var router = express.Router();
 
-//get public holiday
-router.get('/puho', function(req, res){
-    Account.find({'username':'admin'}).exec(function(err, users) {   
-        if (err) throw err;
-        res.render('index', {title: 'Public holiday', users: users })
-    }); 
-});
-
-// Get All Shifts
-router.get('/all', function(req, res){
-    res.render('allshifts', {title:"All Shifts", user: req.user });
-});
-
-// Add Shifts
-router.get('/shifts', function (req, res) {
-    res.render('shift', { title:"Add shift" ,user: req.user });
-});
-
-router.post('/addshift', shift_controller.add_shift, function(req, res){
-    res.send({user: req.user});
-
-});
 
 
-// Remove Shifts
-router.get('/remove', function(req, res){
-    res.render('remove', {title: "Remove Shift", user : req.user });
-});
-router.post('/removeshift', shift_controller.remove_shift, function(req, res){
+// GET /shifts/page
+// /shifts/page?size=10&page=2
+router.get('/page',shift_controller.page_shifts);
+
+
+// POST /shifts/
+// BODY {shifts: [{ ... , ... , ... }]}
+router.post('/add', shift_controller.add_shift, function(req, res){
     res.send({user: req.user});
 });
 
-// Search Shifts with a Date Range
-router.get('/shifts/date',shift_controller.shifts_within_range);
+// POST /remove
+// BODY { shift_id: String }
+router.post('/remove', shift_controller.remove_shift, function(req, res){
+    res.send({user: req.user});
+});
 
-
-// Edit Shifts
+// GET /date
+// BODY { first_date: String , second_date: String , paginate: Number , page: 10 }
+router.get('/date',shift_controller.shifts_within_range_user);
 
 
 module.exports = router;

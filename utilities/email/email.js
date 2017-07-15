@@ -4,21 +4,35 @@ var jadeCompiler = require('./jade_compiler');
 var fs = require('fs');
 
 
-exports.sendHTMLEmail = function(address,subject,content,template_location){
+exports.sendHTMLEmail = function(user,subject,content,template_location){
     
+        
         var transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
             auth: {
-            user: 'm.samidevs@gmail.com',
-            pass: "sjajxqmyuzlapwhb"
+                user: 'pathfinderprotective@gmail.com',
+                pass: "vmmsgfppemfxgbsj"
             }
         });
-        console.log("CONTENT::::::::::::::::::::::::::::::");
-        console.log(content);
-        var new_content = {"user"  : content[1]};
         
+        function add(a, b){
+            return a + b;
+        };
+        
+        var total_hours = 0;
+        var total_ammount = 0;
+        for(var x = 0; x < content.length; x++){
+            total_hours += +(content[x].hours);
+            total_ammount += +(content[x].amount);
+        };
+        
+        var new_content = {"firstname": user.firstname, "shifts"  : content, "totalhours" : total_hours, "totalamount" : total_ammount};
+        
+        
+        
+        console.log(new_content);
         jadeCompiler.compile(template_location,new_content,function(err,html){
             if(err){
                 throw new Error('Problem compiling template(double check relative path): ' + template_location);
@@ -26,8 +40,8 @@ exports.sendHTMLEmail = function(address,subject,content,template_location){
             
             // Mail
             var mailOptions = {
-                  to: new_content.user.email,
-                  from: 'm.samidevs@gmail.com',
+                  to: user.email,
+                  from: 'pathfinderprotective@gmail.com',
                   subject: subject,
                   html: html
                   
@@ -38,7 +52,7 @@ exports.sendHTMLEmail = function(address,subject,content,template_location){
                 console.log('[ERROR] Message NOT sent: ', err);
             }
             else {
-                console.log('[INFO] Message Sent: ' + res.message);
+                console.log('successful sent email to user.');
             }
         });
             

@@ -1,4 +1,4 @@
-h3 Hey #{user.firstname} 
+h3 Hey #{firstname} 
 p This is an invoice for the shifts that you have currently submitted. 
 table(style='border: 1px solid black; border-collapse:collapse; width: 80%;')
   tr(style='border: 1px solid black;')
@@ -10,7 +10,7 @@ table(style='border: 1px solid black; border-collapse:collapse; width: 80%;')
     th Hour Done
     th Hourly Rate
     th Pay
-    each shift in user.shifts 
+    each shift in shifts 
       tr(style='border: 1px solid black; border-collapse:collapse;')
         td #{shift.start_date}
         td #{shift.end_date}
@@ -20,11 +20,11 @@ table(style='border: 1px solid black; border-collapse:collapse; width: 80%;')
         td #{shift.hours}
         td #{shift.hourly_rate}
         td #{shift.amount}
-      tr(style='border: 1px solid black; border-collapse:collapse;')
-        th(colspan="5") Total
-        td #{shift.totalhours}
-        td
-        td #{shift.totalpay}
+    tr(style='border: 1px solid black; border-collapse:collapse;')
+      th(colspan="5") Total
+      td #{totalhours}
+      td
+      td #{totalamount}
 h4 Kind regards,
 h5 Muhammad Majeed
 h5

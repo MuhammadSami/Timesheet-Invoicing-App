@@ -14,21 +14,15 @@ var Account = new Schema({
     email: {type: String, required:true, unique: true},
     abnnumber: {type: String, required:true, unique: true},
     shifts: [{
-        start_date: [],
-        end_date: [],
-        start_time: [],
-        end_time: [],
-        location: [],
-        hours: [],
-        hourly_rate: [],
-        amount:[],
-        totalpay: Number,
-        totalhours: Number,
+        start_date: Date,
+        end_date: Date,
+        start_time: String,
+        end_time: String,
+        location: String,
+        hours: Number,
+        hourly_rate: Number,
+        amount: Number,
         status: String,
-    }],
-    public_holiday:[{
-        date: String,
-        description: String
     }]
 });
 
