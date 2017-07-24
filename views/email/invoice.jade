@@ -1,38 +1,34 @@
-h3 Hey #{firstname} 
-p This is an invoice for the shifts that you have currently submitted. 
-table(style='border: 1px solid black; border-collapse:collapse; width: 80%;')
-  tr(style='border: 1px solid black;')
-    th Start Date
-    th End Date
-    th Start Time
-    th End Time
-    th Location
-    th Hour Done
-    th Hourly Rate
-    th Pay
+h3 Dear #{firstname} , 
+p This is an official invoice for the shifts that you have submitted. 
+table(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+  tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Start Date
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") End Date
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Start Time
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") End Time
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Location
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Hour Done
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Hourly Rate
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Pay
     each shift in shifts 
-      tr(style='border: 1px solid black; border-collapse:collapse;')
-        td #{shift.start_date}
-        td #{shift.end_date}
-        td #{shift.start_time}
-        td #{shift.end_time}
-        td #{shift.location}
-        td #{shift.hours}
-        td #{shift.hourly_rate}
-        td #{shift.amount}
-    tr(style='border: 1px solid black; border-collapse:collapse;')
+      tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.start_date}
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.end_date}
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.start_time}
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.end_time}
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.location}
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.hours}
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.hourly_rate}
+        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.amount}
+    tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
       th(colspan="5") Total
-      td #{totalhours}
-      td
-      td #{totalamount}
-h4 Kind regards,
-h5 Muhammad Majeed
-h5
-  | Operations Manager
-  | AusGroup Protective Services
-a(href='www.agprotective.com.au')  www.agprotective.com.au
-h5
-  | M: 0421 284 127
-  | P: 03 9029 4318
-  | E: info@agprotective.com.au
-  | Mailing Address: P.O Box 88 Coburg, 3058, Victoria
+      td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{totalhours}
+      td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+      td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{totalamount}
+br
+p
+  |Thank you for submitting your shifts through our Online portal. Your invoice has been submitted
+  |successfully.
+  br
+  b  Your Payment will be processed in 15 days (maximum) or earlier.
+  | If you have any questions please contact on Phone: 0421 284 127

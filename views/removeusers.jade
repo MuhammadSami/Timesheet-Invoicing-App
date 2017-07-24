@@ -43,34 +43,26 @@ block content
         .ui.top.attached.tabular.menu
           a.item(href="/") Home
           a.item(href="/showallusers") Show All Users
-          a.active.item(href="/removeusers") Remove Users
           a.item(href="/showinvoices") Show Invoices
+          a.active.item(href="/removeusers") Remove Users
+          a.item(href="/remove") Remove Shifts
           a.item(href="/selectiveshifts") Show Shifts With Site Name
           a.item(href="/sendText") Send Reminders
           a.item(href="/logout") Logout
           .item 
         .ui.bottom.attached.active.tab.segment
             p You are currently logged in as <strong>Admin</strong>
-            table
-                tr(bgcolor='#751aff')
-                    th
-                        font(color="white") User ID
-                    th
-                        font(color="white") Username
-                    th
-                        font(color="white") First Name
-                    th
-                        font(color="white") Last Name
-                    th
-                        font(color="white") Abn Number
-                    th
-                        font(color="white") Security License
-                    th
-                        font(color="white") Phone Number
-                    th
-                        font(color="white") Email
-                    th
-                        font(color="white") CheckBox    
+            table.ui.celled.table
+                thead
+                    tr
+                        th User ID
+                        th Username
+                        th First Name
+                        th Last Name
+                        th Abn Number
+                        th Security License
+                        th Phone Number
+                        th Email
                 tr
                 - each user in users
                     tr
@@ -82,8 +74,6 @@ block content
                     td= user.securitylicense
                     td= user.phonenumber
                     td= user.email
-                    td
-                        input(type='checkbox', name='removeusers')
                     tr.clickable
 
 

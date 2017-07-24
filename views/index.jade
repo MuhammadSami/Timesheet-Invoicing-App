@@ -5,12 +5,14 @@ block scripts
         $(document).ready(function(){
            $(".start_date").change(function(){
               
-              var sdate = $("#start_date"+rowIndex).val();
+              var sdate = $(this).val();
               var date = new Date(sdate);
               var year = date.getFullYear(); 
               $("#year"+rowIndex).val(year);
               rowIndex++;
             });
+            $(".start_date").datepicker({dateFormat: "yy-mm-dd"});
+            
         });
 block content
   if (!user)
@@ -41,8 +43,9 @@ block content
         .ui.top.attached.tabular.menu
           a.active.item(href="/") Home
           a.item(href="/showallusers") Show All Users
+          a.item(href="/showinvoices") Show All Invoices
           a.item(href="/removeusers") Remove Users
-          a.item(href="/showinvoices") Show Invoices
+          a.item(href="/remove") Remove Shifts
           a.item(href="/selectiveshifts") Show Shifts With Site Name
           a.item(href="/sendText") Send Reminders
           a.item(href="/logout") Logout
@@ -59,7 +62,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date0",  required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date0",  required='' autofocus='')
                     td
                       .form-group
                           input.form-control(readonly name="name" value="New Year")
@@ -69,7 +72,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date1" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date1" required='' autofocus='')
                     td
                       .form-group
                       input.form-control(readonly  name="name" value="Australia Day")
@@ -79,7 +82,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date2" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date2" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Labour Day")
@@ -89,7 +92,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date3" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date3" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Good Friday")
@@ -99,7 +102,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date4" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date4" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Holy Saturday")
@@ -109,7 +112,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date5" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date5" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Easter Sunday")
@@ -119,7 +122,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date6" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date6" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Easter Monday")
@@ -129,7 +132,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date7" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date7" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Anzac Day")
@@ -139,7 +142,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date8" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date8" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Queen's Birthday")
@@ -149,7 +152,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date9" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date9" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="AFL Grand Final")
@@ -159,7 +162,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date10" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date10" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Melbourne Cup Day")
@@ -169,7 +172,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date11" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date11" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Christmas")
@@ -179,7 +182,7 @@ block content
                   tr  
                     td            
                       .form-group
-                          input.form-control(type="date", name="date", placeholder='select date', class="start_date", id="start_date12" required='' autofocus='')
+                          input.form-control(type="text", name="date", placeholder='select date', class="start_date", id="start_date12" required='' autofocus='')
                     td
                       .form-group
                         input.form-control(readonly  name="name" value="Boxing Day")
@@ -196,7 +199,6 @@ block content
         a.active.item(href="/") Home
         a.item(href="/pages/add") Add Shifts
         a.item(href="/pages/all") Show All Shifts
-        a.item(href="/pages/remove") Remove Shifts
         a.item(href="/logout") Logout
         .item 
       .ui.bottom.attached.active.tab.segment 

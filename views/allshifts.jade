@@ -1,4 +1,24 @@
 extends layout
+block scripts
+    script.
+        function formatDate(d){
+          var date = new Date(d)
+          var dd = date.getDate(); 
+          var mm = date.getMonth()+1;
+          var yyyy = date.getFullYear(); 
+          if(dd<10){dd='0'+dd} 
+          if(mm<10){mm='0'+mm};
+          return d = dd+'/'+mm+'/'+yyyy
+        }
+        $(document).ready(function(){
+          $('#showall tr').each(function() {
+            var start_date = $(this).find(".start").html();
+            var end_date = $(this).find(".end").html();
+            $(this).find(".start").html(formatDate(start_date));
+            $(this).find(".end").html(formatDate(end_date));
+            
+          });
+        });
 
 block content    
     if (!user)
@@ -28,17 +48,17 @@ block content
         a.item(href="/") Home
         a.item(href="/pages/add") Add Shifts
         a.active.item(href="/pages/all") Show All Shifts
-        a.item(href="/pages/remove") Remove Shifts
         a.item(href="/logout") Logout
         .item 
       .ui.bottom.attached.active.tab.segment 
         | You are currently logged in as  <strong>#{user.username}</strong>
         .alltable   
-          <table class="ui celled table", style="max-width: 80%;">
+          <table id="showall" class="ui celled table", style="max-width: 80%;">
           <thead>
           <tr>
-          <th>Shift Id</th>
-          <th>Date</th>
+          <th>Number</th>
+          <th>Start Date</th>
+          <th>End Date</th>
           <th>Time In</th>
           <th>Time Out</th>
           <th>Location</th>
@@ -49,9 +69,10 @@ block content
           </thead>
           <tbody>
           <tr>
-          - each users in user.shifts
-              td#userID= users._id
-              td= users.start_date
+          - each users, index in user.shifts
+              td#userID= index
+              td.start= users.start_date
+              td.end= users.end_date
               td= users.start_time
               td= users.end_time
               td= users.location

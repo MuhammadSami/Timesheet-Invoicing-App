@@ -10,6 +10,18 @@ var router = express.Router();
 
 
 /* GET users listing. */
+router.get('/remove', function(req, res){
+    Account.find({}).exec(function(err, users) {   
+        if (err) throw err;
+        res.render('remove', {title: "Remove Shift", users : users })
+    });
+    
+});
+
+router.post('/remove', user_controller.remove_shift, function(req, res){
+    res.send({user: req.user});
+})
+
 router.get('/showallusers', function(req, res){
     Account.find({}).exec(function(err, users) {   
         if (err) throw err;

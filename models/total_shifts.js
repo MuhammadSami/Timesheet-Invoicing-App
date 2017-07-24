@@ -4,7 +4,6 @@ var Schema = mongoose.Schema;
 
 var Total_Shifts = new Schema({
     username: String,
-    useremail: String,
     start_date: Date,
     end_date: Date,
     start_time: String,

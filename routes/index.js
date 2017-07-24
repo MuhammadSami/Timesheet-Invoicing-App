@@ -27,19 +27,20 @@ router.post('/register', function(req, res, next) {
           var error = 'Someone with the same credential already exists, try again!';
           if(err.code === 11000) {
             error = 'Some of the values you entered have been already taken, try another.';
-            res.render('register', { message: err.message });
+            res.render('register', {title: 'Register User',  message: error });
           }
-          res.render('register', { message : err.message });
+          res.render('register', {title: 'Register User', message : err.message });
         }
-
-        passport.authenticate('local')(req, res, function () {
-            req.session.save(function (err) {
-              if (err){
-                return next(err);
-              }
-            res.redirect('/');
+        if (!err) {
+            passport.authenticate('local')(req, res, function () {
+                req.session.save(function (err) {
+                  if (err){
+                    return next(err);
+                  }
+                  res.redirect('/');
+              });
           });
-      });
+        }
     });
 });
 

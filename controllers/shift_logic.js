@@ -3,6 +3,7 @@ var Account = require('../models/account');
 var email = require('../utilities/email/email');
 var Queries = require('./queries_logic.js');
 var Invoice = require('../models/invoice.js');
+var flash = require('connect-flash');
 
 exports.add_shift = function(req, res){
     
@@ -27,6 +28,7 @@ exports.add_shift = function(req, res){
             for(var x = 0; x < req.body.start_date.length; x++){
                 console.log("add the next shift");
                 var shift = {
+                    username: user.username,
                     start_date: req.body.start_date[x], end_date: req.body.end_date[x] ,start_time: req.body.start_time[x], end_time: req.body.end_time[x], 
                     location: req.body.location[x], hours: req.body.hours[x], hourly_rate: req.body.hourly_rate[x],
                     amount: req.body.amount[x],status: "PENDING"
@@ -39,6 +41,7 @@ exports.add_shift = function(req, res){
         } else {
 
             var shift = {
+                username: user.username,
                 start_date: req.body.start_date, end_date: req.body.end_date, start_time: req.body.start_time, end_time: req.body.end_time, 
                 location: req.body.location, hours: req.body.hours, hourly_rate: req.body.hourly_rate,
                 amount: req.body.amount,total: req.body.total,status: "PENDING"
@@ -54,7 +57,6 @@ exports.add_shift = function(req, res){
             if (err){
                 return err;
             } 
-            
             // Storing all shifts
             Queries.add_shifts(new_shifts);
             
@@ -65,6 +67,7 @@ exports.add_shift = function(req, res){
   
             // Send Email
             email.sendHTMLEmail(user,'Invoice from Aus Group Protective Invoice',new_shifts,"email/invoice");
+            req.flash('info', 'An e-mail has been sent to ' + req.user.email + ' with the invoice.');
             res.redirect("/pages/add");
         });
 
@@ -112,7 +115,7 @@ exports.remove_shift = function(req, res){
                 return err;
         }; 
     });
-    res.redirect('/pages/remove')
+    res.redirect('/remove');
     });
 };
 

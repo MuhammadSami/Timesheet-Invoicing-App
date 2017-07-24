@@ -1,4 +1,83 @@
 extends layout
+block scripts
+    script.
+        $(document).ready(function(){
+            $( function() {
+            $("#start_date").datepicker({dateFormat: "mm-dd-yy"});
+            $("#end_date").datepicker({dateFormat: "mm-dd-yy"});
+            });
+            $('#search tr').each(function() {
+                var start_date = $(this).find(".start").html();
+                var end_date = $(this).find(".end").html();
+                $(this).find(".start").html(formatDate(start_date));
+                $(this).find(".end").html(formatDate(end_date));
+            });
+         });
+         function formatDate(d){
+          var date = new Date(d)
+          var dd = date.getDate(); 
+          var mm = date.getMonth()+1;
+          var yyyy = date.getFullYear(); 
+          if(dd<10){dd='0'+dd} 
+          if(mm<10){mm='0'+mm};
+          return d = dd+'/'+mm+'/'+yyyy
+        }
+        //VERY USEFUL CODE 
+        // function getdata(){
+        //     var start = $("#start_date").val();
+        //     var end = $("#end_date").val();
+        //     $.get( "/queries/shifts?start_date="+start+"&end_date="+end, function( data ) {
+        //         var shifts = data;
+        //         var arrItems = [];      // THE ARRAY TO STORE JSON ITEMS.
+        //         $.each(data, function (index, value) {
+        //             arrItems.push(value);       // PUSH THE VALUES INSIDE THE ARRAY.
+        //         });
+    
+        //         // EXTRACT VALUE FOR TABLE HEADER.
+        //         var col = [];
+        //         for (var i = 0; i < arrItems.length; i++) {
+        //             for (var key in arrItems[i]) {
+        //                 if (col.indexOf(key) === -1) {
+        //                     col.push(key);
+        //                 }
+        //             }
+        //         }
+    
+        //         // CREATE DYNAMIC TABLE.
+        //         var table = document.createElement("table");
+    
+        //         // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+    
+        //         var tr = table.insertRow(-1);                   // TABLE ROW.
+    
+        //         for (var i = 0; i < col.length; i++) {
+        //             var th = document.createElement("th");      // TABLE HEADER.
+        //             th.innerHTML = col[i];
+        //             tr.appendChild(th);
+        //         }
+    
+        //         // ADD JSON DATA TO THE TABLE AS ROWS.
+        //         for (var i = 0; i < arrItems.length; i++) {
+    
+        //             tr = table.insertRow(-1);
+    
+        //             for (var j = 0; j < col.length; j++) {
+        //                 var tabCell = tr.insertCell(-1);
+        //                 tabCell.innerHTML = arrItems[i][col[j]];
+        //             }
+        //         }
+    
+        //         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+        //         var divContainer = document.getElementById("showData");
+        //         divContainer.innerHTML = "";
+        //         divContainer.appendChild(table);
+        //     }); 
+        //     $("#showData table").addClass("ui celled table");
+        //     //$(".int table tbody tr td:nth-child(2)").addClass("start");
+        //     //$(".intro table tbody tr td:nth-child(3)").addClass("end");
+
+        // }
+
 block content    
     if (!users)
      .ui.raised.very.padded.text.container.segment
@@ -26,53 +105,54 @@ block content
         .ui.top.attached.tabular.menu
           a.item(href="/") Home
           a.item(href="/showallusers") Show All Users
-          a.item(href="/removeusers") Remove Users
           a.active.item(href="/showinvoices") Show Invoices
+          a.item(href="/removeusers") Remove Users
+          a.item(href="/remove") Remove Shifts
           a.item(href="/selectiveshifts") Show Shifts With Site Name
           a.item(href="/sendText") Send Reminders
           a.item(href="/logout") Logout
           .item 
         .ui.bottom.attached.active.tab.segment
             p You are currently logged in as <strong>Admin</strong>
-            table.clickable
-                - each user in users
-                    tr(bgcolor='#751aff')
-                        th
-                            font(color="white") Full Name
-                        th
-                            font(color="white") Abn Number
-                        th
-                            font(color="white") Security License
-                    tr
-                        td= user.firstname + " "+user.lastname
-                        td= user.abnnumber
-                        td= user.securitylicense
-                    tr.clickable
-                        th(colspan='8') #{user.firstname}'s shifts
-                        tr(bgcolor='#3399ff')
-                            th
-                                font(color="white") Date
-                            th 
-                                font(color="white") Time In
-                            th
-                                font(color="white") Time Out
-                            th 
-                                font(color="white") Location
-                            th
-                                font(color="white") Hours
-                            th
-                                font(color="white") Hourly rate
-                            th 
-                                font(color="white") Pay 
-                        tr
-                            - each shift in user.shifts
-                                td= shift.start_date
-                                td= shift.start_time
-                                td= shift.end_time
-                                td= shift.location
-                                td= shift.hours
-                                td= shift.hourly_rate
-                                td= shift.amount
-                                tr.shift
-            a(href='/')
-                button.btn.btn-primary(type="button") Back
+            form(role='form', action="/queries/shifts",method="get", style='max-width: 100%;')
+                table
+                    thead
+                      tr
+                        th From Date
+                        th To Date
+                      tr
+                        td
+                          .form-group
+                              input.form-control(type='text', id="start_date" ,name="start_date", placeholder='Select Date' autofocus='')
+                        td
+                          .form-group
+                              input.form-control(type='text', id="end_date" ,name="end_date", placeholder='Select Date' autofocus='')
+                button.btn.btn-default(type='submit') Search
+                &nbsp;
+                a(href='/')
+                    button.btn.btn-primary(type="button") Back to home 
+            table#search.ui.celled.striped.table
+              thead
+                tr
+                  th UserName
+                  th Shift id
+                  th Start Date
+                  th End Date
+                  th Start Time 
+                  th End Time
+                  th Location
+                  th Hours
+                  th Pay
+                if shift
+                    each shifts in shift
+                        tbody
+                          tr
+                            td= shifts.username
+                            td= shifts._id
+                            td.start= shifts.start_date
+                            td.end= shifts.end_date
+                            td= shifts.start_time
+                            td= shifts.end_time
+                            td= shifts.location
+                            td= shifts.hours
+                            td= shifts.amount

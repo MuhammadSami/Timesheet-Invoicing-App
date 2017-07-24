@@ -17,8 +17,28 @@ exports.remove_users = function(req, res){
             if (err) {
                 return (err);
             }; 
-        req.flash('success', 'Successfully deleted '+req.body.firstname);
+        
     });
+    req.flash('success', 'Successfully deleted '+req.body.firstname);
     res.redirect('/removeusers')
+    });
+};
+
+exports.remove_shift = function(req, res){
+    var shift_id = req.body.shift_id;
+    Account.findOne({_id: req.body.user_id}, function(err, user){
+        if (err)
+            return err;
+        
+        // Google pull?
+        user.shifts.remove(shift_id);
+    
+        user.save(function (err) {
+            if (err) {
+                return err;
+        };
+    });
+    req.flash('info', "Shift has been deleted");
+    res.redirect('/remove');
     });
 };

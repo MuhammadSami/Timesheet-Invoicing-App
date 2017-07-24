@@ -1,6 +1,15 @@
 extends layout
 block scripts
     script.
+        function formatDate(d){
+          var date = new Date(d)
+          var dd = date.getDate(); 
+          var mm = date.getMonth()+1;
+          var yyyy = date.getFullYear(); 
+          if(dd<10){dd='0'+dd} 
+          if(mm<10){mm='0'+mm};
+          return d = dd+'/'+mm+'/'+yyyy
+        }
         function check_box() {
             $('input:checkbox').change(function(){
                 if ($(this).is(':checked')) {
@@ -11,11 +20,34 @@ block scripts
                 }
             });
         };
+        function myFunction() {
+          var input, filter, table, tr, td, i;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName("tr");
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }       
+          }
+        }
         $(document).ready( function(){
-            check_box(); 
+            check_box();
+            $('#myTable tr').each(function() {
+                var start_date = $(this).find(".start").html();
+                var end_date = $(this).find(".end").html();
+                $(this).find(".start").html(formatDate(start_date));
+                $(this).find(".end").html(formatDate(end_date));
+             });
         });
 block content 
-    if (!user)
+    if (!users)
      .ui.raised.very.padded.text.container.segment
        <img class="ui medium image" src="/images/agpLogo.png">
        .ui.warning.message
@@ -35,49 +67,58 @@ block content
             .content
               .title Sign Up
               .description Sign up for an Account.
-    if (user)  
+    if (users)  
       .right.floated.left.aligned.six.wide.column
         .ui.segment
           .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
-        | You are currently logged in as <strong>#{user.username}</strong>
+        | You are currently logged in as <strong>Admin</strong>
       .ui.top.attached.tabular.menu
-        a.item(href="/") Home
-        a.item(href="/pages/add") Add Shifts
-        a.item(href="/pages/all") Show All Shifts
-        a.active.item(href="/pages/remove") Remove Shifts
-        a.item(href="/logout") Logout
+          a.item(href="/") Home
+          a.item(href="/showallusers") Show All Users
+          a.item(href="/showinvoices") Show Invoices
+          a.item(href="/removeusers") Remove Users
+          a.active.item(href="/remove") Remove Shifts
+          a.item(href="/selectiveshifts") Show Shifts With Site Name
+          a.item(href="/sendText") Send Reminders
+          a.item(href="/logout") Logout
         .item 
-      .ui.bottom.attached.active.tab.segment     
-        //p all your shifts are #{user.shifts}
-        //each users in user.shifts
-        <table>
-        <tr>
-        <th>Shift Id</th>
-        <th>Date</th>
-        <th>Time In</th>
-        <th>Time Out</th>
-        <th>Location</th>
-        <th>Hours</th>
-        <th>Hourly rate</th>
-        <th> Pay </th>
-        <th> checkbox </th>
-        </tr>
-        <tr>
-        - each users in user.shifts
-            td#userID= users._id
-            td= users.start_date
-            td= users.start_time
-            td= users.end_time
-            td= users.location
-            td= users.hours
-            td= users.hourly_rate
-            td= users.amount
-            <td>  <input type='checkbox' name="remove"></td>
-            </tr>
-        </table>
-        form(role='form', action="/shifts/remove",method="post", style='max-width: 300px;')
+      .ui.bottom.attached.active.tab.segment
+        p You are currently logged in as <strong>Admin</strong>
+        input#myInput(type='text', onkeyup='myFunction()', placeholder='Search for names..', title='Type in a name')
+        table#myTable.ui.celled.table
+            thead
+                tr
+                    th Employee 
+                    th Shift ID
+                    th User ID
+                    th Start Date
+                    th End Date    
+                    th Start Time
+                    th End Time    
+                    th Location
+                    th Hours
+                    th Pay Per Shift  
+                tr
+                - each user in users
+                    - each shift in user.shifts
+                        td= user.firstname+" "+user.lastname
+                        td= shift._id
+                        td= user._id
+                        td.start= shift.start_date
+                        td.end= shift.end_date
+                        td= shift.start_time
+                        td= shift.end_time
+                        td= shift.location
+                        td= shift.hours
+                        td= shift.amount
+                        tr.shift
+        form(role='form', action="/remove",method="post", style='max-width: 300px;')
             .form-group
+                h5 Enter Shift ID
                 input.form-control(type='text', name="shift_id", placeholder='Enter Shift Id' autofocus='')
+            .form-group
+                h5 Enter User ID
+                input.form-control(type='text', name="user_id", placeholder='Enter User Id' autofocus='')
             button.btn.btn-default(type='submit') Remove Selected 
             &nbsp;
             a(href='/')

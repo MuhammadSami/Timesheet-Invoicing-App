@@ -37,8 +37,9 @@ block content
         .ui.top.attached.tabular.menu
           a.item(href="/") Home
           a.active.item(href="/showallusers") Show All Users
-          a.item(href="/removeusers") Remove Users
           a.item(href="/showinvoices") Show Invoices
+          a.item(href="/removeusers") Remove Users
+          a.item(href="/remove") Remove Shifts
           a.item(href="/selectiveshifts") Show Shifts With Site Name
           a.item(href="/sendText") Send Reminders
           a.item(href="/logout") Logout
@@ -46,53 +47,24 @@ block content
         .ui.bottom.attached.active.tab.segment
             p You are currently logged in as <strong>Admin</strong>
         - each user in users
-            .ui.blue.segment
-                .ui.four.cards
-                    a.ui.centered.card(href="")
-                        .content
-                            .header= user.firstname + " " +user.lastname
-                            .meta
-                            .description
-                                h4.category Abn Number: 
-                                    p= user.abnnumber
-                                h4.category Security License
-                                    p= user.securitylicense
-                                h4.category Email
-                                    p= user.email
-                                h4.category Phone Number
-                                    p= user.phonenumber
-                            .extra.content
-                                .right.floated.author
-                                    span.category Username
-                                     p= user.username
-                    table
-                        tr(bgcolor='#3399ff')
-                            th 
-                                font(color="white") Shift ID
-                            th
-                                font(color="white") Date
-                            th 
-                                font(color="white") Time In
-                            th
-                                font(color="white") Time Out
-                            th 
-                                font(color="white") Location
-                            th
-                                font(color="white") Hours
-                            th
-                                font(color="white") Hourly rate
-                            th 
-                                font(color="white") Pay 
-                        tr
-                            - each shift in user.shifts
-                                td= shift._id
-                                td= shift.start_date
-                                td= shift.start_time
-                                td= shift.end_time
-                                td= shift.location
-                                td= shift.hours
-                                td= shift.hourly_rate
-                                td= shift.amount
-                                tr.shift
-            a(href='/')
-                button.btn.btn-primary(type="button") Back
+                .ui.blue.segment
+                    .ui.four.cards
+                        a.ui.centered.card(href="")
+                            .content
+                                .header= user.firstname + " " +user.lastname
+                                .meta
+                                .description
+                                    h4.category Abn Number: 
+                                        p= user.abnnumber
+                                    h4.category Security License
+                                        p= user.securitylicense
+                                    h4.category Email
+                                        p= user.email
+                                    h4.category Phone Number
+                                        p= user.phonenumber
+                                .extra.content
+                                    .right.floated.author
+                                        span.category Username
+                                         p= user.username
+        a(href='/')
+            button.btn.btn-primary(type="button") Back

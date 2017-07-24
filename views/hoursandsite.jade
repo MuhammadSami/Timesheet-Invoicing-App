@@ -1,14 +1,33 @@
 extends layout
 block scripts
     script.
-        function hide(){
-            $(".clickable").click(function() {
-                $(this).closest("tr").next().slideToggle();
-            });
-        };
         $(document).ready( function(){
-            hide();
-        });       
+            $( function() {
+              $("#start_date").datepicker({dateFormat: "mm-dd-yy"});
+              $("#end_date").datepicker({dateFormat: "mm-dd-yy"});
+            });
+
+        }); 
+        
+        // // Initialising
+        // var start_date = null;
+        // var end_date = null;
+        
+        
+        
+        // function retreiveShiftLocations(){
+        //     if( start_date == null or end_date == null) return;
+        //     if( start_date.getTime() > end_date.getTime()) return;
+            
+        //     var url = "/queries/locations/hours?start_date="+start_date+"&"+"end_date="+end_date;
+        //     $.ajax({url: url, success: function(result){
+        //         console.log("received response");
+        //     }});
+            
+        // }
+        
+
+        
 block content    
     if (!users)
      .ui.raised.very.padded.text.container.segment
@@ -36,31 +55,43 @@ block content
         .ui.top.attached.tabular.menu
           a.item(href="/") Home
           a.item(href="/showallusers") Show All Users
-          a.item(href="/removeusers") Remove Users
           a.item(href="/showinvoices") Show Invoices
+          a.item(href="/removeusers") Remove Users
+          a.item(href="/remove") Remove Shifts
           a.active.item(href="/selectiveshifts") Show Shifts With Site Name
           a.item(href="/sendText") Send Reminders
           a.item(href="/logout") Logout
           .item 
         .ui.bottom.attached.active.tab.segment
             p You are currently logged in as <strong>Admin</strong>
-            table.clickable
-                - each user in users
-                    tr(bgcolor='#3399ff')
-                        th 
-                            font(color="white") Shift ID
-                        th
-                            font(color="white") Date
-                        th 
-                            font(color="white") Location
-                        th
-                            font(color="white") Hours
-                    tr
-                    - each shift in user.shifts
-                        td= shift._id
-                        td= shift.start_date
-                        td= shift.location
-                        td= shift.hours
-                        tr.shift
-            a(href='/')
-                button.btn.btn-primary(type="button") Back
+            form(role='form', action="/queries/locations/hours",method="get", style='max-width: 50%;')
+              table
+                thead
+                  tr
+                    th From Date
+                    th To Date
+                  tr
+                    td
+                      .form-group
+                          input.form-control(type='text', id="start_date" ,name="start_date", placeholder='Select Date' autofocus='')
+                    td
+                      .form-group
+                          input.form-control(type='text', id="end_date" ,name="end_date", placeholder='Select Date' autofocus='')
+              button.btn.btn-default(type='submit') Search
+              &nbsp;
+              a(href='/')
+                  button.btn.btn-primary(type="button") Back to home 
+            table#search.ui.celled.striped.table
+              thead
+                tr
+                  th(colspan='1')
+                    | Location 
+                  th(colspan='2')
+                    | Total hours   
+                if result
+                  each results in result
+                    tbody
+                      tr
+                        td= results._id
+                        td.right.aligned.collapsing= results.total 
+  

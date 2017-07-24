@@ -12,6 +12,7 @@ exports.compile = function(relativeTemplatePath, data, next){
   // get our compiled template by passing path and data to jade
   _jade.renderFile(absoluteTemplatePath, data, function(err, compiledTemplate){
     if(err){
+      console.log(err);
       throw new Error('Problem compiling template(double check relative template path): ' + relativeTemplatePath);
     }
     console.log('[INFO] COMPILED TEMPLATE: ', compiledTemplate)

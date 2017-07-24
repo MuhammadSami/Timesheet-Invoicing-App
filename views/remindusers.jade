@@ -38,29 +38,25 @@ block content
         .ui.top.attached.tabular.menu
           a.item(href="/") Home
           a.item(href="/showallusers") Show All Users
+          a.item(href="/showinvoices") Show All Invoices
           a.item(href="/removeusers") Remove Users
-          a.item(href="/showinvoices") Show Invoices
+          a.item(href="/remove") Remove Shifts
           a.item(href="/selectiveshifts") Show Shifts With Site Name
           a.active.item(href="/sendText") Send Reminders
           a.item(href="/logout") Logout
           .item 
         .ui.bottom.attached.active.tab.segment
             p You are currently logged in as <strong>Admin</strong>
-            table.clickable
+            table.ui.celled.table
                 - each user in users
-                    tr(bgcolor='#751aff')
-                        th
-                            font(color="white") First Name
-                        th
-                            font(color="white") Last Name
-                        th
-                            font(color="white") Abn Number
-                        th
-                            font(color="white") Security License
-                        th
-                            font(color="white") Phone Number
-                        th
-                            font(color="white") Email
+                    thead
+                        tr
+                            th First Name
+                            th Last Name
+                            th Abn Number
+                            th Security License
+                            th Phone Number
+                            th Email
                     tr
                         td= user.firstname
                         td= user.lastname

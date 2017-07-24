@@ -27,7 +27,8 @@ exports.sendHTMLEmail = function(user,subject,content,template_location){
             total_hours += +(content[x].hours);
             total_ammount += +(content[x].amount);
         };
-        
+        total_hours.toFixed(2);
+        total_ammount.toFixed(2);
         var new_content = {"firstname": user.firstname, "shifts"  : content, "totalhours" : total_hours, "totalamount" : total_ammount};
         
         

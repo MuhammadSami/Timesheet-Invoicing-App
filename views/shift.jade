@@ -1,17 +1,35 @@
-extends layout 
+extends layout
+//<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvkWSqjKKSrLUO_qKoh-N3ZRj_rE8pAeI&amp&libraries=places&amp;callback=initAutocomplete" async defer></script> 
 block scripts
     script.
+        //Initializing Autocomplete for Locations
+        function initialize() {
+      
+          var acInputs = document.getElementsByClassName("autocomplete");
+      
+          for (var i = 0; i < acInputs.length; i++) {
+      
+              var autocomplete = new google.maps.places.Autocomplete(acInputs[i]);
+              autocomplete.inputId = acInputs[i].id;
+      
+              google.maps.event.addListener(autocomplete, 'place_changed', function () {
+              });
+          }
+        }
+        // Global Variables
+        var holidays;
+        var date = [];
         var rowIndex= 0;
         function add_row(){
           rowIndex ++;
           
-          var newRow = '<tr><td><div class="form-group"><input type="date" id="start_date'+rowIndex+'" name="start_date" placeholder="select date" required="" autofocus="" class="form-control start_date"></div></td>"'+
-                      '<td><div class="form-group"><input type="date" id="end_date'+rowIndex+'" name="end_date" placeholder="select date" required="" autofocus="" class="form-control end_date"></div></td>"'+
+          var newRow = '<tr><td><div class="form-group"><input type="text" id="start_date'+rowIndex+'" name="start_date" placeholder="dd-mm-yyyy" required="" autofocus="" class="form-control start_date"></div></td>"'+
+                      '<td><div class="form-group"><input type="text" id="end_date'+rowIndex+'" name="end_date" placeholder="dd-mm-yyy" required="" autofocus="" class="form-control end_date"></div></td>"'+
                       '<td><div class="form-group"><input type="text" id="start_time'+rowIndex+'" name="start_time" placeholder="e.g 08:30" pattern="\\d{02}:\\d{02}" required="" class="form-control start_time"></div></td>"'+
                       '<td><div class="form-group"><input type="text" id="end_time'+rowIndex+'"name="end_time" placeholder="e.g 17:30" pattern="\\d{02}:\\d{02}" required="" class="form-control end_time"></div></td>"'+
-                      '<td colspan="3"><div class="form-group"><input type="text" name="location" placeholder="570 Bourke Street" required="" class="form-control"></div></td>"'+
+                      '<td colspan="3"><div class="form-group"><input type="text" id="autocomplete" name="location" placeholder="570 Bourke Street" onfocus="initialize()" required="" class="form-control autocomplete"></div></td>"'+
                       '<td><div class="form-group"><input readonly="" id="hours'+rowIndex+'" type="number" name="hours" placeholder="0" required="" class="form-control hours"></div></td>"'+
-                      '<td><div class="form-group"><select id="hourly_rate'+rowIndex+'" name="hourly_rate" required="" class="hourly_rate'+rowIndex+'"><option value="22">Base Pay</option><option value="30">Public Holiday</option></select></div></td>"'+
+                      '<td><div class="form-group"><input readonly id="hourly_rate'+rowIndex+'" name="hourly_rate" required="" class="form-control hourly_rate" value="22"></div></td>"'+
                       '<td><div class="form-group"><input readonly="" id="amount'+rowIndex+'" type="number" name="amount" required="" class="form-control amount"></div></td>"'+
                       '<td><div class="form-group"><button id="removerow" name="removerow'+rowIndex+'" class="negative ui button"><i class="remove icon"></i>Remove</button></div></td></tr>';
   
@@ -21,67 +39,74 @@ block scripts
         function remove_row(){
           $('#shiftTable  tr:last').remove();
         }
-        function calculateTime(sDate, eDate, start_time, end_time, hours_worked, amount, hourly) {
+        function calculateTime(sDate, eDate, start_time, end_time, hours_worked, amount, hourly, publicHolidayArray) {
           //get values
           var valuestart = $(start_time).val();
           var valuestop = $(end_time).val();
           var startDate = $(sDate).val();
           var endDate = $(eDate).val();
-          //calculate hours for user    
+              
+          //calculate hours for user normal    
           var timeStart = new Date(startDate+" "+valuestart).getTime();
           var timeEnd = new Date(endDate+" "+valuestop).getTime();
-          var hourDiff = timeEnd - timeStart; //in ms
-          //https://msdn.microsoft.com/en-us/library/aa239571(v=vs.60).aspx
-          //https://www.google.com.au/search?q=how+to+get+elapsed+hours+of+the+datetime+entered&oq=how+to+get+elapsed+hours+of+the+datetime+entered&aqs=chrome..69i57.12294j0j4&sourceid=chrome&ie=UTF-8#q=how+to+get+elapsed+hours+of+the+date+time+entered+javascript
-          //https://stackoverflow.com/questions/20839874/difference-between-two-dates-in-minute-hours-javascript
-          // var secDiff = hourDiff / 1000; //in s
-          // var minDiff = hourDiff / 60 / 1000; //in minutes
-          // var hDiff = hourDiff / 3600 / 1000; //in hours
-          var hourMin= hourDiff/3600000;
-          $(hours_worked).val(hourMin);
+          
+          
+          var datearray= [];
+          // Calculate Public Holiday pay
+          //getting dates out of the Holiday array
+          for (var i=0; i<publicHolidayArray.length; i++){
+            datearray.push(new Date(publicHolidayArray[i].date).getTime());
+          }
+          // comparing dates to selected dates.
+          for (var p = 0; p<datearray.length; p++){
+            var pb1 = new Date(startDate).getTime();
+            var pb2 = new Date(endDate).getTime();
 
+            if (pb1 && pb2 === datearray[p]){
+              var hourDiff = timeEnd - timeStart; //in ms
+              // Calculating hours and displaying in hours field
+              var hourMin= hourDiff/3600000;
+              $(hours_worked).val(hourMin.toFixed(2));
+              // Caclulating Pay and displaying in pay field
+              rate = $(hourly).val("30");
+              var hours_w = $(hours_worked).val();
+              var pay = rate * hours_w;
+              $(amount).val(pay.toFixed(2));
+              // check if any one of them is a public holiday 
+            }
+          // when compared with the dates, calculate the wages with 30 dollars based on how many hours have been done
+          }
+          console.log("NOT MATCH");
+          var hourDiff = timeEnd - timeStart; //in ms
+          // Calculating hours and displaying in hours field
+          
+          var hourMin= hourDiff/3600000;
+          $(hours_worked).val(hourMin.toFixed(2));
+          
+          // Caclulating Pay and displaying in pay field
+          
           rate = $(hourly).val();
-          console.log("Rate : "+rate);
           var hours_w = $(hours_worked).val();
           var pay = rate * hours_w;
-          $(amount).val(pay);
+          $(amount).val(pay.toFixed(2));
         }
-        function calculateSpecialPay(Sdate, Edate, hourly){
-          
-          //Calculate pay for user based on field selected #todo make it based on Public holiday dates   
-          var vic_holidays = ["2017-01-01","2017-01-26","2017-04-25","2017-12-25","2017-12-26"];
-          var date1= $(Sdate).val();
-          var date2= $(Edate).val();
-          for (i=0; i<vic_holidays.length; i++){
-            if (date1 || date2 === vic_holidays[i]){
-                $(hourly).val('30');
-                break;
-            }
-            else{
-                $(hourly).val('22');
-                break;
-            }
-          }
-        }
+
         $(document).ready(function(){
-        
-         // Global Variable
-         
-          var holidays;
-          
+            $("#removerow").keypress(function(e){
+               if(e.keyCode === 13){
+                   e.preventDefault();
+               }
+            });
+
            $.get( "/holidays/", function( data ) {
               
               holidays = data;
-              console.log("received holidays :)");
-              console.log(holidays);
+              for(var i=0; i<holidays.length; i++){
+                date.push(holidays[i].date);  
+              }
+              
             });
-            
-            
-            
-            
-            
-            
-            
+            // Getting ids of all rows and fields to accurately calculate shifts
             
             var start = "#start_time"+rowIndex;
             var end = "#end_time"+rowIndex;
@@ -90,9 +115,14 @@ block scripts
             var hourly = "#hourly_rate"+rowIndex;
             var start_date= "#start_date"+rowIndex;
             var end_date = "#end_date"+rowIndex;
+            $( function() {
+              $(start_date).datepicker({dateFormat: "yy-mm-dd"});
+              $(end_date).datepicker({dateFormat: "yy-mm-dd"});
+            });
+            //Calculate pay based on form change
             $("form").change(function(){
-              calculateTime(start_date, end_date, start, end, hours, amount, hourly);
-              //calculateSpecialPay(start_date, end_date, hourly);
+              //Call to calculate special pay based on dates
+              calculateTime(start_date, end_date, start, end, hours, amount, hourly, holidays);
               // sum all totals
               var sum = 0;
               
@@ -101,8 +131,8 @@ block scripts
                       sum += parseFloat(this.value);
                   }
               });
-
-              // show values in netto, steuer, brutto fields
+    
+              // show values in total hours and total pay fields
               $("#totalpay").val(sum.toFixed(2));
               var sum1 = 0;
               $(".hours").each(function () {
@@ -114,6 +144,24 @@ block scripts
               $("#total_hours").val(sum1.toFixed(2));
               
             });
+            //Validate form based on values entered
+            $("form").submit(function(){
+              if ($(start_date).val()<= $(end_date).val()){
+                if($(start_date).val() === $(end_date).val()){
+                  if($(start).val() > $(end).val() ){
+                    $(end).addClass("error");
+                    alert("End Time cannot be before start time, Please Enter the right time.");
+                    return false;
+                  }
+                }
+              }else{
+                $(start_date).addClass("error");
+                alert("Start Date cannot be after End Date, Please Enter the right date");
+                return false;
+              }
+            });
+        });
+            //ADD ROW FUNCTION
             $(document).on('click', '#add_row', function() {
               var start = "#start_time"+rowIndex;
               var end = "#end_time"+rowIndex;
@@ -122,19 +170,25 @@ block scripts
               var hourly = "#hourly_rate"+rowIndex;
               var start_date= "#start_date"+rowIndex;
               var end_date = "#end_date"+rowIndex;
-              console.log("Start time is : "+start+"\n end time is: "+end);
-              console.log("row index is : "+rowIndex);
+
+              $( function() {
+                $(start_date).datepicker({dateFormat: "yy-mm-dd"});
+                $(end_date).datepicker({dateFormat: "yy-mm-dd"});
+              });
+              //Calculate pay on form change 
               $("form").change(function(){
-                calculateTime(start_date, end_date, start, end, hours, amount, hourly);
-                //calculateSpecialPay(start_date, hourly);
+                calculateTime(start_date, end_date, start, end, hours, amount, hourly, holidays);
+         
                 // sum all totals
                 var sum = 0;
+                
                 $(".amount").each(function () {
                     if (!isNaN(this.value) && this.value.length != 0) {
                         sum += parseFloat(this.value);
                     }
                 });
-                // show values in netto, steuer, brutto fields
+  
+                // show values in total hours and total pay fields
                 $("#totalpay").val(sum.toFixed(2));
                 var sum1 = 0;
                 $(".hours").each(function () {
@@ -146,9 +200,22 @@ block scripts
                 $("#total_hours").val(sum1.toFixed(2));
                 
               });
-              
-
-              
+              //Validate form Based on entered data
+              $("form").submit(function(){
+                if ($(start_date).val()<= $(end_date).val()){
+                  if($(start_date).val() === $(end_date).val()){
+                    if($(start).val() > $(end).val() ){
+                      $(end).addClass("error");
+                      alert("End Time cannot be before start time, Please Enter the right time.");
+                      return false;
+                    }
+                  }
+                }else{
+                  $(start_date).addClass("error");
+                  alert("Start Date cannot be after end date, Please Enter the right date");
+                  return false;
+                }
+              });
             });
             
 
@@ -175,34 +242,97 @@ block scripts
                 $("#totalpay").val(pos.toFixed(2));              
                 
             });
-        });
-        function CalculatePayOnDate(){
-            if(holidays == null){
-              // Validate to check if receieved values.
-            }
-            var d1 = $('.start_date').val();
-            var d2 = $('.end_date').val();
-            if (d1<=d2){
-              for (var i=0; i<vic_holidays.length; i++){
-                  if (d1 && d2 == vic_holidays[i]){
-                  	console.log("calculate pay normally with 30 dollars");
-                  }else if (d1 || d2 === vic_holidays[i]){
-                  				console.log("date1 or date2 matched. Calculate hours and pay");
-                  				if (d1 === vic_holidays[i]){
-                    					console.log("date 1 get hours and  calculate public holiday for these hours pay");
-                            }
-                          else if (d2 === vic_holidays[i]){
-                            	console.log("date2 get hours and calc pay ");
-                            }
-                  }else{
-                    console.log("NOT MATCH");
-                  }
+        // function CalculatePayOnDate(startDate, endDate, sTime, eTime, hrate, publicHolidayArray){
+        //     if(publicHolidayArray === null){
+        //       // Validate to check if receieved values.
+        //       alert("Cannot Calculate Public holidays at the moment. Ask Admin to add public holidays in the system.");
+        //       return false;
+        //     }
+        //     var d1 = $(startDate).val();
+        //     var d2 = $(endDate).val();
+        //     var s1 = $(sTime).val();
+        //     var s2 = $(eTime).val();
+        //     var datearray= [];
+        //     // Calculate Public Holiday pay
+        //     //getting dates out of the Holiday array
+        //     for (var i=0; i<publicHolidayArray.length; i++){
+        //       datearray.push(new Date(publicHolidayArray[i].date).getTime());
+        //     }
+        //     // comparing dates to selected dates.
+        //     for (var p = 0; p<datearray.length; p++){
+        //       var pb1 = new Date(d1).getTime();
+        //       var pb2 = new Date(d2).getTime();
+              
+        //       // if ( || endDate === publicHolidayArray[i].date){
+        //       if (pb1 && pb2 === datearray[p]){
+        //         console.log("WHOLE PUBLIC HOLIDAY CALCULATION");
+        //         $(hrate).val("30");
+        //       }else if(pb1 || pb2 === datearray[p]){
+        //         if (pb1 === datearray[p]){
+        //           var calculation= s1 * 30;
+        //           console.log("Start Date is a Public Holiday get hours and  calculate public holiday for these hours pay");
+        //         if (pb2 === datearray[p]){
+                  
+        //           console.log("End Date is a public holiday check how many hours were done on this date and calc pay ");
+        //         }
+        //       }
+
+        //       }else{
+        //         console.log("NOT MATCH");
+        //       }
+        //     // when compared with the dates, calculate the wages with 30 dollars based on how many hours have been done
+        //     }
+        //   }
+          
+          
+          // Checkcing time input http://www.the-art-of-web.com/javascript/validate-date/  	
+          
+        function checkTime(field){
+          var errorMsg = "";
+      
+          // regular expression to match required time format
+          re = /^(\d{1,2}):(\d{2})(:00)?([ap]m)?$/;
+      
+          if(field.value != '') {
+            if(regs = field.value.match(re)) {
+              if(regs[4]) {
+                // 12-hour time format with am/pm
+                if(regs[1] < 1 || regs[1] > 12) {
+                  errorMsg = "Invalid value for hours: " + regs[1];
                 }
-            	}else{
-              	console.log("start date cannot be after end date");
+              } else {
+                // 24-hour time format
+                if(regs[1] > 23) {
+                  errorMsg = "Invalid value for hours: " + regs[1];
+                }
               }
-          	}
+              if(!errorMsg && regs[2] > 59) {
+                errorMsg = "Invalid value for minutes: " + regs[2];
+              }
+            } else {
+              errorMsg = "Invalid time format: " + field.value;
+            }
+          }
+      
+          if(errorMsg != "") {
+            alert(errorMsg);
+            field.focus();
+            return false;
+          }
         
+            return true;
+        }
+        function checkForm(form){
+          if(!checkTime(form.start_time)) return false;
+          if(!checkTime(form.end_time)) return false;
+          if(form.hours < 0){
+            alert("hours are not calculated properly. Please check the date and times entered.");
+            return false;
+          } 
+          return true;
+        }
+ 
+       
 block content
   if (!user)
      .ui.raised.very.padded.text.container.segment
@@ -232,7 +362,6 @@ block content
         a.item(href="/") Home
         a.active.item(href="/pages/add") Add Shifts
         a.item(href="/pages/all") Show All Shifts
-        a.item(href="/pages/remove") Remove Shifts
         a.item(href="/logout") Logout
         .item 
       .ui.bottom.attached.active.tab.segment 
@@ -240,7 +369,7 @@ block content
         p.lead Hi <strong>#{user.username}</strong>, please add your shift below.
         br
         //form#holiday(action="/holidays/", method="get")
-        form(role='form', action="/shifts/add", method="post", style='max-width: 80%;')
+        form(role='form', action="/shifts/add", method="post", style='max-width: 100%;',  onsubmit="return checkForm(this);")
           table#shiftTable
             tr 
               th Start Date
@@ -256,19 +385,19 @@ block content
               tr  
                 td            
                   .form-group
-                      input.form-control(type="date", name="start_date", placeholder='select date', class="start_date", id="start_date0" required='' autofocus='')
+                      input.form-control(type="text", name="start_date", placeholder='dd-mm-yyyy', class="start_date", id="start_date0" ,  required='' autofocus='')
                 td            
                   .form-group
-                      input.form-control(type="date", name="end_date", placeholder='select date', class="end_date", id="end_date0" required='' autofocus='')                
+                      input.form-control(type="text", name="end_date", placeholder='dd-mm-yyyy', class="end_date", id="end_date0",  required='' autofocus='')                
                 td
                   .form-group
                     input.form-control(type='text', id="start_time0",class="start_time", name="start_time", placeholder='e.g 08:30' , pattern='\\d{02}:\\d{02}' required='')
                 td
                   .form-group
-                    input.form-control(type='tel',id="end_time0",class="end_time", name="end_time",placeholder= 'e.g 17:30',pattern='\\d{02}:\\d{02}' required='')
+                    input.form-control(type='text',id="end_time0",class="end_time", name="end_time",placeholder= 'e.g 17:30',pattern='\\d{02}:\\d{02}' required='')
                 td(colspan="3")
                   .form-group
-                    input.form-control(type='text', name="location", placeholder='570 Bourke Street' required='')
+                    input.form-control(type='text', id='autocomplete', name="location", class="autocomplete",placeholder='570 Bourke Street', onfocus='initialize()' required='')
                 td
                   .form-group
                     input.form-control(readonly type='number',id="hours0",class="hours", name='hours', placeholder='0' required='')

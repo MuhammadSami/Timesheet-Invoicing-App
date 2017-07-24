@@ -30,7 +30,7 @@ var users = require('./routes/users');
 var pages = require('./routes/pages');
 var holidays = require('./routes/holidays');
 var shifts = require('./routes/shifts');
-
+var queries = require('./routes/queries');
 
 var app = express();
 
@@ -75,6 +75,7 @@ app.use('/pages/',pages);
 app.use('/',users);
 app.use('/shifts',shifts);
 app.use('/holidays',holidays);
+app.use('/queries',queries);
 
 
 
