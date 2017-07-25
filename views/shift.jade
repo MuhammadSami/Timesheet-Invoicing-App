@@ -41,6 +41,7 @@ block scripts
         }
         function calculateTime(sDate, eDate, start_time, end_time, hours_worked, amount, hourly, publicHolidayArray) {
           //get values
+          var rate = 0;
           var valuestart = $(start_time).val();
           var valuestop = $(end_time).val();
           var startDate = $(sDate).val();
@@ -61,8 +62,9 @@ block scripts
           for (var p = 0; p<datearray.length; p++){
             var pb1 = new Date(startDate).getTime();
             var pb2 = new Date(endDate).getTime();
-
+            // if both dates are the same and are a public holiday
             if (pb1 && pb2 === datearray[p]){
+              console.log("full Public Holiday");
               var hourDiff = timeEnd - timeStart; //in ms
               // Calculating hours and displaying in hours field
               var hourMin= hourDiff/3600000;
@@ -74,21 +76,87 @@ block scripts
               $(amount).val(pay.toFixed(2));
               // check if any one of them is a public holiday 
             }
-          // when compared with the dates, calculate the wages with 30 dollars based on how many hours have been done
+            // if only start date is a public holiday
+            if(pb1 === datearray[p]){
+              console.log("starting on public holiday");
+              var hourDiff = timeEnd - timeStart; //in ms
+              // Calculating hours and displaying in hours field
+              var hourMin= hourDiff/3600000;
+              $(hours_worked).val(hourMin.toFixed(2));
+              var s1 = valuestart; 
+              var t1 = startDate;
+              var d1 = new Date(s1+" "+t1);
+              var d2 = new Date(t1+" 24:00:00");
+              d1 = moment(d1).format("YYYY-MM-DD HH:mm:ss");
+              d2 = moment(d2).format("YYYY-MM-DD HH:mm:ss");
+              var diff_ms = moment(d2).diff(moment(d1));
+              var dur_obj = moment.duration(diff_ms);
+              var hours= dur_obj.asHours().toFixed(2);
+              rate = $(hourly).val("30");
+              var holidayPay = 30 * hours;
+              var s2 = valuestop;
+              var t2 = endDate;
+              var d3 = new Date(s2+" "+t2);
+              var d4 = new Date(t2+" 00:00:00");
+              d3 = moment(d3).format("YYYY-MM-DD HH:mm:ss");
+              d4 = moment(d4).format("YYYY-MM-DD HH:mm:ss");
+              var diff_ms1 = moment(d3).diff(moment(d4));
+              var dur_obj1 = moment.duration(diff_ms1);
+              var hours2= dur_obj1.asHours().toFixed(2);
+              var normalPay = 22 * hours2;
+              var totalPay = holidayPay+normalPay;
+              $(amount).val(totalPay.toFixed(2));
+              return false;
+            }
+            //If only end date is a public holiday
+            if(pb2 === datearray[p]){
+              console.log("Ending on public holiday");
+              var hourDiff = timeEnd - timeStart; //in ms
+              // Calculating hours and displaying in hours field
+              var hourMin= hourDiff/3600000;
+              $(hours_worked).val(hourMin.toFixed(2));
+              var s1 = valuestart; 
+              var t1 = startDate;
+              var d1 = new Date(s1+" "+t1);
+              var d2 = new Date(t1+" 24:00:00");
+              d1 = moment(d1).format("YYYY-MM-DD HH:mm:ss");
+              d2 = moment(d2).format("YYYY-MM-DD HH:mm:ss");
+              var diff_ms = moment(d2).diff(moment(d1));
+              var dur_obj = moment.duration(diff_ms);
+              var hours= dur_obj.asHours().toFixed(2);
+              var holidayPay = 22 * hours;
+              var s2 = valuestop;
+              var t2 = endDate;
+              var d3 = new Date(s2+" "+t2);
+              var d4 = new Date(t2+" 00:00:00");
+              d3 = moment(d3).format("YYYY-MM-DD HH:mm:ss");
+              d4 = moment(d4).format("YYYY-MM-DD HH:mm:ss");
+              var diff_ms1 = moment(d3).diff(moment(d4));
+              var dur_obj1 = moment.duration(diff_ms1);
+              var hours2= dur_obj1.asHours().toFixed(2);
+              rate = $(hourly).val("30");
+              var normalPay = 30 * hours2;
+              var totalPay = holidayPay+normalPay;
+              $(amount).val(totalPay.toFixed(2));
+              return false;
+            }else{
+              // when compared with the dates, calculate the wages with 30 dollars based on how many hours have been done
+              console.log("NOT MATCH");
+              var hourDiff = timeEnd - timeStart; //in ms
+              // Calculating hours and displaying in hours field
+              
+              var hourMin= hourDiff/3600000;
+              $(hours_worked).val(hourMin.toFixed(2));
+              
+              // Caclulating Pay and displaying in pay field
+              
+              rate = $(hourly).val();
+              var hours_w = $(hours_worked).val();
+              var pay = rate * hours_w;
+              $(amount).val(pay.toFixed(2));
+            }
+
           }
-          console.log("NOT MATCH");
-          var hourDiff = timeEnd - timeStart; //in ms
-          // Calculating hours and displaying in hours field
-          
-          var hourMin= hourDiff/3600000;
-          $(hours_worked).val(hourMin.toFixed(2));
-          
-          // Caclulating Pay and displaying in pay field
-          
-          rate = $(hourly).val();
-          var hours_w = $(hours_worked).val();
-          var pay = rate * hours_w;
-          $(amount).val(pay.toFixed(2));
         }
 
         $(document).ready(function(){

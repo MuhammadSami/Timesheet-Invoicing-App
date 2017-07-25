@@ -41,7 +41,7 @@ exports.sendHTMLEmail = function(user,subject,content,template_location){
             
             // Mail
             var mailOptions = {
-                  to: user.email,
+                  to: user.email+', agprotective@gmail.com',
                   from: 'pathfinderprotective@gmail.com',
                   subject: subject,
                   html: html
