@@ -22,6 +22,15 @@ block scripts
           if(mm<10){mm='0'+mm};
           return d = dd+'/'+mm+'/'+yyyy
         }
+        var date = new Date();
+         $(document).on('click', '#download', function() {
+          $("#search").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Invoices",
+            filename: "Invoices " + moment(date).format("DD-MM-YYYY HH:mm:ss")
+          }); 
+        });
         //VERY USEFUL CODE 
         // function getdata(){
         //     var start = $("#start_date").val();
@@ -156,3 +165,6 @@ block content
                             td= shifts.location
                             td= shifts.hours
                             td= shifts.amount
+            button#download.positive.ui.button
+              i.download.icon
+              |  Download                

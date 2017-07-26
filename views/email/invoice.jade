@@ -1,5 +1,22 @@
-h3 Dear #{firstname} , 
-p This is an official invoice for the shifts that you have submitted. 
+h3 Dear #{user.firstname} , 
+p This is an official invoice for the shifts that you have submitted.
+h5 Personal Information 
+table(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+  tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Name
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") ABN Number
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Security License
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Phone
+    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Email
+
+  tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.firstname} #{user.lastname}
+    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.abnnumber}
+    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.securitylicense}
+    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.phonenumber}
+    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.email}
+
+h5 Invoice
 table(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
   tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
     th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Start Date
@@ -27,8 +44,11 @@ table(style="border: 1px solid black; border-collapse: collapse; width: 100%; te
       td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{totalamount}
 br
 p
-  |Thank you for submitting your shifts through our Online portal. Your invoice has been submitted
-  |successfully.
+  | Thank you for submitting your shifts through our Online portal. Your invoice has been submitted
+  | successfully.
   br
-  b  Your Payment will be processed in 15 days (maximum) or earlier.
-  | If you have any questions please contact on Phone: 0421 284 127
+  b  Your Payment will be processed with in 15 days (maximum).
+  br
+  | If you have any questions please contact on 
+  b Phone: 
+  |  0421 284 127

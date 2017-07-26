@@ -8,7 +8,15 @@ block scripts
             });
 
         }); 
-        
+        var date = new Date();
+         $(document).on('click', '#download', function() {
+          $("#search").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Sites and Hours",
+            filename: "Sites with total hours " + moment(date).format("DD-MM-YYYY HH:mm:ss")
+          }); 
+        });
         // // Initialising
         // var start_date = null;
         // var end_date = null;
@@ -94,4 +102,7 @@ block content
                       tr
                         td= results._id
                         td.right.aligned.collapsing= results.total 
+            button#download.positive.ui.button
+              i.download.icon
+              |  Download
   

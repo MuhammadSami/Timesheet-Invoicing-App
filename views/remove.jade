@@ -24,7 +24,7 @@ block scripts
           var input, filter, table, tr, td, i;
           input = document.getElementById("myInput");
           filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
+          table = document.getElementById("table");
           tr = table.getElementsByTagName("tr");
           for (i = 0; i < tr.length; i++) {
             td = tr[i].getElementsByTagName("td")[0];
@@ -39,12 +39,22 @@ block scripts
         }
         $(document).ready( function(){
             check_box();
-            $('#myTable tr').each(function() {
+            $('#table tr').each(function() {
                 var start_date = $(this).find(".start").html();
                 var end_date = $(this).find(".end").html();
                 $(this).find(".start").html(formatDate(start_date));
                 $(this).find(".end").html(formatDate(end_date));
              });
+        });
+        var date = new Date();
+         $(document).on('click', '#download', function() {
+          $("#table").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "User Data By Name",
+            filename: "Filtered Shift Data " + moment(date).format("DD-MM-YYYY HH:mm:ss"),
+            fileext: ".xlsx",
+          }); 
         });
 block content 
     if (!users)
@@ -85,7 +95,7 @@ block content
       .ui.bottom.attached.active.tab.segment
         p You are currently logged in as <strong>Admin</strong>
         input#myInput(type='text', onkeyup='myFunction()', placeholder='Search for names..', title='Type in a name')
-        table#myTable.ui.celled.table
+        table#table.ui.celled.table
             thead
                 tr
                     th Employee 
@@ -123,3 +133,6 @@ block content
             &nbsp;
             a(href='/')
                 button.btn.btn-primary(type="button") Cancel
+            button#download.positive.ui.button
+              i.download.icon
+              |  Download
