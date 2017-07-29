@@ -13,7 +13,9 @@ router.get('/',  function (req, res) {
  res.render('index', { title:'Agp Protective', user : req.user });
 });
 
-
+router.get('/user/new',  function (req, res) {
+ res.render('newuser', { title:'Agp Protective', user : req.user });
+});
 
 router.get('/register', function(req, res) {
     res.render('register', {title: 'Register User' });
@@ -37,7 +39,7 @@ router.post('/register', function(req, res, next) {
                   if (err){
                     return next(err);
                   }
-                  res.redirect('/');
+                  res.redirect('/user/new');
               });
           });
         }

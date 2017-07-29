@@ -6,12 +6,14 @@ block scripts
         function initialize() {
       
           var acInputs = document.getElementsByClassName("autocomplete");
-      
+            var options = {
+              componentRestrictions: {country: 'au'}
+            };
           for (var i = 0; i < acInputs.length; i++) {
       
-              var autocomplete = new google.maps.places.Autocomplete(acInputs[i]);
+              var autocomplete = new google.maps.places.Autocomplete(acInputs[i], options);
               autocomplete.inputId = acInputs[i].id;
-      
+
               google.maps.event.addListener(autocomplete, 'place_changed', function () {
               });
           }
@@ -23,15 +25,15 @@ block scripts
         function add_row(){
           rowIndex ++;
           
-          var newRow = '<tr><td><div class="form-group"><input type="text" id="start_date'+rowIndex+'" name="start_date" placeholder="dd-mm-yyyy" required="" autofocus="" class="form-control start_date"></div></td>"'+
-                      '<td><div class="form-group"><input type="text" id="end_date'+rowIndex+'" name="end_date" placeholder="dd-mm-yyy" required="" autofocus="" class="form-control end_date"></div></td>"'+
-                      '<td><div class="form-group"><input type="text" id="start_time'+rowIndex+'" name="start_time" placeholder="e.g 08:30" pattern="\\d{02}:\\d{02}" required="" class="form-control start_time"></div></td>"'+
-                      '<td><div class="form-group"><input type="text" id="end_time'+rowIndex+'"name="end_time" placeholder="e.g 17:30" pattern="\\d{02}:\\d{02}" required="" class="form-control end_time"></div></td>"'+
-                      '<td colspan="3"><div class="form-group"><input type="text" id="autocomplete" name="location" placeholder="570 Bourke Street" onfocus="initialize()" required="" class="form-control autocomplete"></div></td>"'+
+          var newRow = '<tr><td><div class="form-group"><input type="text" id="start_date'+rowIndex+'" name="start_date" placeholder="yyyy-mm-dd"  pattern="^\\d{4}-\\d\\d-\\d\\d$"  title="Correct Format e.g 2017-02-14, Year-month-day" required="" autofocus="" class="form-control start_date"></div></td>"'+
+                      '<td><div class="form-group"><input type="text" id="end_date'+rowIndex+'" name="end_date" placeholder="yyyy-mm-dd" pattern="^\\d{4}-\\d\\d-\\d\\d$"  title="Correct Format e.g 2017-02-14, Year-month-day" required="" autofocus="" class="form-control end_date"></div></td>"'+
+                      '<td><div class="form-group"><input type="text" id="start_time'+rowIndex+'" name="start_time" placeholder="e.g 08:30" pattern="\\d{02}:\\d{02}" title="Correct Format e.g 08:00 or 18:00 in 24 hour time format" required="" class="form-control start_time"></div></td>"'+
+                      '<td><div class="form-group"><input type="text" id="end_time'+rowIndex+'"name="end_time" placeholder="e.g 17:30" pattern="\\d{02}:\\d{02}" title="Correct Format e.g 08:00 or 18:00 in 24 hour time format" required="" class="form-control end_time"></div></td>"'+
+                      '<td colspan="3"><div class="form-group"><input type="text" id="autocomplete" name="location" placeholder="Enter address select & from dropdown menu" onfocus="initialize()" required="" class="form-control autocomplete"></div></td>"'+
                       '<td><div class="form-group"><input readonly="" id="hours'+rowIndex+'" type="number" name="hours" placeholder="0" required="" class="form-control hours"></div></td>"'+
                       '<td><div class="form-group"><input readonly id="hourly_rate'+rowIndex+'" name="hourly_rate" required="" class="form-control hourly_rate" value="22"></div></td>"'+
                       '<td><div class="form-group"><input readonly="" id="amount'+rowIndex+'" type="number" name="amount" required="" class="form-control amount"></div></td>"'+
-                      '<td><div class="form-group"><button id="removerow" name="removerow'+rowIndex+'" class="negative ui button"><i class="remove icon"></i>Remove</button></div></td></tr>';
+                      '<td><div class="form-group"><button id="removerow" type="button" name="removerow'+rowIndex+'" class="negative ui button"><i class="remove icon"></i>Remove</button></div></td></tr>';
   
               $("#shiftTable > tbody:last-child").prev().after(newRow);
 
@@ -62,22 +64,8 @@ block scripts
           for (var p = 0; p<datearray.length; p++){
             var pb1 = new Date(startDate).getTime();
             var pb2 = new Date(endDate).getTime();
-            // if both dates are the same and are a public holiday
-            if (pb1 && pb2 === datearray[p]){
-              console.log("full Public Holiday");
-              var hourDiff = timeEnd - timeStart; //in ms
-              // Calculating hours and displaying in hours field
-              var hourMin= hourDiff/3600000;
-              $(hours_worked).val(hourMin.toFixed(2));
-              // Caclulating Pay and displaying in pay field
-              rate = $(hourly).val("30");
-              var hours_w = $(hours_worked).val();
-              var pay = rate * hours_w;
-              $(amount).val(pay.toFixed(2));
-              // check if any one of them is a public holiday 
-            }
-            // if only start date is a public holiday
-            if(pb1 === datearray[p]){
+
+            if(pb1  === datearray[p] && pb2 != datearray[p]){
               console.log("starting on public holiday");
               var hourDiff = timeEnd - timeStart; //in ms
               // Calculating hours and displaying in hours field
@@ -107,9 +95,8 @@ block scripts
               var totalPay = holidayPay+normalPay;
               $(amount).val(totalPay.toFixed(2));
               return false;
-            }
-            //If only end date is a public holiday
-            if(pb2 === datearray[p]){
+            } 
+            if(pb2 === datearray[p] && pb1 != datearray[p]){
               console.log("Ending on public holiday");
               var hourDiff = timeEnd - timeStart; //in ms
               // Calculating hours and displaying in hours field
@@ -139,6 +126,19 @@ block scripts
               var totalPay = holidayPay+normalPay;
               $(amount).val(totalPay.toFixed(2));
               return false;
+            }
+            if (pb1 && pb2 === datearray[p]){
+              console.log("full Public Holiday");
+              var hourDiff = timeEnd - timeStart; //in ms
+              // Calculating hours and displaying in hours field
+              var hourMin= hourDiff/3600000;
+              $(hours_worked).val(hourMin.toFixed(2));
+              // Caclulating Pay and displaying in pay field
+              rate = $(hourly).val("30");
+              var hours_w = $(hours_worked).val();
+              var pay = rate * hours_w;
+              $(amount).val(pay.toFixed(2));
+              
             }else{
               // when compared with the dates, calculate the wages with 30 dollars based on how many hours have been done
               console.log("NOT MATCH");
@@ -160,12 +160,7 @@ block scripts
         }
 
         $(document).ready(function(){
-            $("#removerow").keypress(function(e){
-               if(e.keyCode === 13){
-                   e.preventDefault();
-               }
-            });
-
+           $("#submit").prop("disabled",true);
            $.get( "/holidays/", function( data ) {
               
               holidays = data;
@@ -213,24 +208,44 @@ block scripts
               
             });
             //Validate form based on values entered
-            $("form").submit(function(){
+            $(".end_date, .end_time").change(function(){
               if ($(start_date).val()<= $(end_date).val()){
                 if($(start_date).val() === $(end_date).val()){
                   if($(start).val() > $(end).val() ){
                     $(end).addClass("error");
                     alert("End Time cannot be before start time, Please Enter the right time.");
-                    return false;
                   }
                 }
               }else{
                 $(start_date).addClass("error");
                 alert("Start Date cannot be after End Date, Please Enter the right date");
-                return false;
               }
             });
+            $(".start_time, .end_time").change(function(){
+                var s = $(start).val();
+                var e = $(end).val();
+                if(!checkTime(s)) return false;
+                if(!checkTime(e)) return false;
+                return true;
+            });
+            $("form").change(function(){
+              var hrs =$(hours).val();
+              if (hrs === ''){
+                $("#submit").prop("disabled",true);
+                return false;
+              } else if(hrs < 0){
+                $("#submit").prop("disabled",true);
+                return false;
+              }else{
+                $("#submit").prop("disabled",false);
+                return true;
+              }
+            });
+            
         });
             //ADD ROW FUNCTION
             $(document).on('click', '#add_row', function() {
+              $("#submit").prop("disabled",true);
               var start = "#start_time"+rowIndex;
               var end = "#end_time"+rowIndex;
               var hours = "#hours"+rowIndex;
@@ -268,20 +283,38 @@ block scripts
                 $("#total_hours").val(sum1.toFixed(2));
                 
               });
-              //Validate form Based on entered data
-              $("form").submit(function(){
+              //Validate form based on values entered
+              $(".end_date, .end_time").change(function(){
                 if ($(start_date).val()<= $(end_date).val()){
                   if($(start_date).val() === $(end_date).val()){
                     if($(start).val() > $(end).val() ){
                       $(end).addClass("error");
                       alert("End Time cannot be before start time, Please Enter the right time.");
-                      return false;
                     }
                   }
                 }else{
                   $(start_date).addClass("error");
-                  alert("Start Date cannot be after end date, Please Enter the right date");
+                  alert("Start Date cannot be after End Date, Please Enter the right date");
+                }
+              });
+              $(".start_time, .end_time").change(function(){
+                var s = $(start).val();
+                var e = $(end).val();
+                if(!checkTime(s)) return false;
+                if(!checkTime(e)) return false;
+                return true;
+              });
+              $("form").change(function(){
+                var hrs =$(hours).val();
+                if (hrs === ''){
+                  $("#submit").prop("disabled",true);
                   return false;
+                } else if(hrs < 0){
+                  $("#submit").prop("disabled",true);
+                  return false;
+                }else{
+                  $("#submit").prop("disabled",false);
+                  return true;
                 }
               });
             });
@@ -308,52 +341,9 @@ block scripts
                     }
                 });
                 $("#totalpay").val(pos.toFixed(2));              
-                
+                $("#submit").prop("disabled",false);
             });
-        // function CalculatePayOnDate(startDate, endDate, sTime, eTime, hrate, publicHolidayArray){
-        //     if(publicHolidayArray === null){
-        //       // Validate to check if receieved values.
-        //       alert("Cannot Calculate Public holidays at the moment. Ask Admin to add public holidays in the system.");
-        //       return false;
-        //     }
-        //     var d1 = $(startDate).val();
-        //     var d2 = $(endDate).val();
-        //     var s1 = $(sTime).val();
-        //     var s2 = $(eTime).val();
-        //     var datearray= [];
-        //     // Calculate Public Holiday pay
-        //     //getting dates out of the Holiday array
-        //     for (var i=0; i<publicHolidayArray.length; i++){
-        //       datearray.push(new Date(publicHolidayArray[i].date).getTime());
-        //     }
-        //     // comparing dates to selected dates.
-        //     for (var p = 0; p<datearray.length; p++){
-        //       var pb1 = new Date(d1).getTime();
-        //       var pb2 = new Date(d2).getTime();
-              
-        //       // if ( || endDate === publicHolidayArray[i].date){
-        //       if (pb1 && pb2 === datearray[p]){
-        //         console.log("WHOLE PUBLIC HOLIDAY CALCULATION");
-        //         $(hrate).val("30");
-        //       }else if(pb1 || pb2 === datearray[p]){
-        //         if (pb1 === datearray[p]){
-        //           var calculation= s1 * 30;
-        //           console.log("Start Date is a Public Holiday get hours and  calculate public holiday for these hours pay");
-        //         if (pb2 === datearray[p]){
-                  
-        //           console.log("End Date is a public holiday check how many hours were done on this date and calc pay ");
-        //         }
-        //       }
-
-        //       }else{
-        //         console.log("NOT MATCH");
-        //       }
-        //     // when compared with the dates, calculate the wages with 30 dollars based on how many hours have been done
-        //     }
-        //   }
           
-          
-          // Checkcing time input http://www.the-art-of-web.com/javascript/validate-date/  	
           
         function checkTime(field){
           var errorMsg = "";
@@ -362,7 +352,7 @@ block scripts
           re = /^(\d{1,2}):(\d{2})(:00)?([ap]m)?$/;
       
           if(field.value != '') {
-            if(regs = field.value.match(re)) {
+            if(regs = field.match(re)) {
               if(regs[4]) {
                 // 12-hour time format with am/pm
                 if(regs[1] < 1 || regs[1] > 12) {
@@ -378,7 +368,7 @@ block scripts
                 errorMsg = "Invalid value for minutes: " + regs[2];
               }
             } else {
-              errorMsg = "Invalid time format: " + field.value;
+              console.log("INVALID FORMAT");
             }
           }
       
@@ -390,15 +380,8 @@ block scripts
         
             return true;
         }
-        function checkForm(form){
-          if(!checkTime(form.start_time)) return false;
-          if(!checkTime(form.end_time)) return false;
-          if(form.hours < 0){
-            alert("hours are not calculated properly. Please check the date and times entered.");
-            return false;
-          } 
-          return true;
-        }
+
+
  
        
 block content
@@ -425,7 +408,9 @@ block content
   if (user)
     .right.floated.left.aligned.six.wide.column
         .ui.segment
-          .ui.left.aligned.header <img class="ui small image" src="/images/agpLogo.png"> 
+          .ui.left.aligned.header 
+            a(href='http://www.pathfinder1.com.au')
+              img.ui.small.image(src='/images/agpLogo.png')
       .ui.top.attached.tabular.menu
         a.item(href="/") Home
         a.active.item(href="/pages/add") Add Shifts
@@ -437,14 +422,14 @@ block content
         p.lead Hi <strong>#{user.username}</strong>, please add your shift below.
         br
         //form#holiday(action="/holidays/", method="get")
-        form(role='form', action="/shifts/add", method="post", style='max-width: 100%;',  onsubmit="return checkForm(this);")
+        form(role='form', action="/shifts/add", method="post", style='max-width: 100%;')
           table#shiftTable
             tr 
               th Start Date
               th End Date
               th Start Time
               th End Time
-              th(colspan="3") Location  (e.g 570 Bourke Street)
+              th(colspan="3") Location  (e.g 570 Bourke Street, Melbourne, Victoria)
               th Hours Done
               th Hourly Rate
               th Pay 
@@ -453,19 +438,19 @@ block content
               tr  
                 td            
                   .form-group
-                      input.form-control(type="text", name="start_date", placeholder='dd-mm-yyyy', class="start_date", id="start_date0" ,  required='' autofocus='')
+                      input.form-control(type="text", name="start_date", placeholder='yyyy-mm-dd', class="start_date", id="start_date0", pattern='^\\d{4}-\\d\\d-\\d\\d$' , title="Correct Format e.g 2017-02-14, Year-month-day",  required='' autofocus='')
                 td            
                   .form-group
-                      input.form-control(type="text", name="end_date", placeholder='dd-mm-yyyy', class="end_date", id="end_date0",  required='' autofocus='')                
+                      input.form-control(type="text", name="end_date", placeholder='yyyy-mm-dd', class="end_date", id="end_date0", pattern='^\\d{4}-\\d\\d-\\d\\d$', title="Correct Format e.g 2017-02-14, Year-month-day", required='' autofocus='')                
                 td
                   .form-group
-                    input.form-control(type='text', id="start_time0",class="start_time", name="start_time", placeholder='e.g 08:30' , pattern='\\d{02}:\\d{02}' required='')
+                    input.form-control(type='text', id="start_time0",class="start_time", name="start_time", placeholder='e.g 08:30' , pattern='\\d{02}:\\d{02}', title="Correct Format e.g 08:00 or 18:00 in 24 hour time format" required='')
                 td
                   .form-group
-                    input.form-control(type='text',id="end_time0",class="end_time", name="end_time",placeholder= 'e.g 17:30',pattern='\\d{02}:\\d{02}' required='')
+                    input.form-control(type='text',id="end_time0",class="end_time", name="end_time",placeholder= 'e.g 17:30',pattern='\\d{02}:\\d{02}', title="Correct Format e.g 08:00 or 18:00 in 24 hour time format"  required='')
                 td(colspan="3")
                   .form-group
-                    input.form-control(type='text', id='autocomplete', name="location", class="autocomplete",placeholder='570 Bourke Street', onfocus='initialize()' required='')
+                    input.form-control(type='text', id='autocomplete', name="location", class="autocomplete",placeholder='Enter address select & from dropdown menu', onfocus='initialize()' required='')
                 td
                   .form-group
                     input.form-control(readonly type='number',id="hours0",class="hours", name='hours', placeholder='0' required='')
@@ -476,10 +461,7 @@ block content
                   .form-group
                     input.form-control(readonly type='number',id="amount0",class="amount", name="amount" required='')
                 td
-                  .form-group
-                    button#removerow.negative.ui.button(name="removerow") 
-                      i.remove.icon 
-                      | Remove
+
                 tr
                   th(colspan="7") Total
                   td 
@@ -496,7 +478,7 @@ block content
               | Add more shifts
           
           br
-          button.btn.btn-default(type='submit' id="submit") Submit
+          button.btn.btn-default(type='submit' id="submit" ) Submit
           &nbsp;
           a(href='/')
             button.btn.btn-primary(type="button") Back

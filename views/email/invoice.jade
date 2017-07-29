@@ -2,46 +2,46 @@ h3 Dear #{user.firstname} ,
 p This is an official invoice for the shifts that you have submitted.
 h5 Personal Information 
 table(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
-  tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Name
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") ABN Number
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Security License
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Phone
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Email
+  tr(style="border: 1px solid black; border-collapse: collapse; text-align: left;")
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Name
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") ABN Number
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Security License
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Phone
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Email
 
-  tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
-    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.firstname} #{user.lastname}
-    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.abnnumber}
-    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.securitylicense}
-    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.phonenumber}
-    td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{user.email}
+  tr(style="border: 1px solid black; border-collapse: collapse; text-align: left;")
+    td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{user.firstname} #{user.lastname}
+    td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{user.abnnumber}
+    td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{user.securitylicense}
+    td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{user.phonenumber}
+    td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{user.email}
 
 h5 Invoice
 table(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
-  tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Start Date
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") End Date
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Start Time
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") End Time
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Location
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Hour Done
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Hourly Rate
-    th(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") Pay
+  tr(style="border: 1px solid black; border-collapse: collapse; text-align: left;")
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Start Date
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") End Date
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Start Time
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") End Time
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Location
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Hour Done
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Hourly Rate
+    th(style="border: 1px solid black; border-collapse: collapse; text-align: left;") Pay
     each shift in shifts 
-      tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.start_date}
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.end_date}
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.start_time}
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.end_time}
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.location}
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.hours}
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.hourly_rate}
-        td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{shift.amount}
-    tr(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
+      tr(style="border: 1px solid black; border-collapse: collapse; text-align: left;")
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.start_date}
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.end_date}
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.start_time}
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.end_time}
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.location}
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.hours}
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.hourly_rate}
+        td(style="border: 1px solid black; border-collapse: collapse; text-align: left;") #{shift.amount}
+    tr(style="border: 1px solid black; border-collapse: collapse;   text-align: left;")
       th(colspan="5") Total
-      td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{totalhours}
-      td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;")
-      td(style="border: 1px solid black; border-collapse: collapse; width: 100%; text-align: left;") #{totalamount}
+      td(style="border: 1px solid black; border-collapse: collapse;   text-align: left;") #{totalhours}
+      td(style="border: 1px solid black; border-collapse: collapse;   text-align: left;")
+      td(style="border: 1px solid black; border-collapse: collapse;   text-align: left;") #{totalamount}
 br
 p
   | Thank you for submitting your shifts through our Online portal. Your invoice has been submitted

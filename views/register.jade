@@ -33,7 +33,7 @@ block content
               .field
                 h5 Phone Number      
                 .form-group
-                  input.form-control(type='text', name="phonenumber", placeholder='Mobile Number e.g 0423123456', pattern="^0[4]\\d{8}$" required='')        
+                  input.form-control(type='text', name="phonenumber", placeholder='Mobile Number e.g 0423123456', pattern="^0[4]\\d{8}$", title="Enter an Australian Mobile phone number e.g 0412345678" required='')        
               .field
                 h5 Email Address
                 .form-group
@@ -41,13 +41,13 @@ block content
             h4.ui.dividing.header(style="color: #3385ff;") License and ABN Information
             .two.fields
               .field
-                h5 ABN number
+                h5 ABN
                 .form-group
-                  input.form-control(type='text', name="abnnumber", class="abnnumber", placeholder='ABN', pattern='\\d{11}' required='')
+                  input.form-control(type='text', name="abnnumber", class="abnnumber", placeholder='ABN (11 Digits)', pattern='\\d{11}', title="Please enter the 11 digit Australian Business Number" required='')
               .field
                 h5 Security License Number 
                 .form-group
-                input.form-control(type='text', name="securitylicense", placeholder='License Number eg. 123-456-78S', pattern='\\d{8}\\w' required='')      
+                input.form-control(type='text', name="securitylicense", placeholder='License Number eg. 12345678S', pattern='\\d{8}\\w', title="Please enter your security license number without the '-' and it should be 8 digits following by a letter" required='')      
             button.btn.btn-default(type='submit') Submit 
             &nbsp;
             a(href='/login')
