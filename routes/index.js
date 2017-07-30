@@ -83,6 +83,8 @@ router.get('/forgot', function(req, res) {
   });
 });
 
+
+
 router.post('/forgot', function(req, res, next) {
   async.waterfall([
     function(done) {
@@ -93,6 +95,9 @@ router.post('/forgot', function(req, res, next) {
     },
     function(token, done) {
       Account.findOne({ email: req.body.email }, function(err, user) {
+        if(err){
+          console.log("Error:" + err);
+        }
         if (!user) {
           req.flash('error', 'No account with that email address exists.');
           return res.redirect('/forgot');
@@ -104,6 +109,7 @@ router.post('/forgot', function(req, res, next) {
         user.save(function(err) {
           done(err, token, user);
         });
+        
       });
     },
     function(token, user, done) {
@@ -157,16 +163,14 @@ router.post('/reset/:token', function(req, res) {
           return res.redirect('back');
         }
 
-        user.password = req.body.password;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
-
-        user.save(function(err) {
-          req.logIn(user, function(err) {
-            done(err, user);
+        user.setPassword(req.body.password, function(){
+          user.save(function(err) {
+            req.logIn(user, function(err) {
+              done(err, user);
           });
         });
       });
+    });
     },
     function(user, done) {
       var smtpTransport = nodemailer.createTransport({
