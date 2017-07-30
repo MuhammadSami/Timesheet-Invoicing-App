@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  .container
+    .ui.center.aligned.segment
+        .ui.center.aligned.header <img class="ui medium image" src="/images/agpLogo.png">
+        - if (message)
+            .alert.alert-danger #{message}
+        br
+        br
+        if(user)
+          .ui.raised.very.padded.text.container.segment
+            h2.ui.header Terms of use and how to use
+            li Login and click on add shifts
+            li Add shift with the correct dates and times in format Start time 08:00 (24hr) End Time: 17:30 
+            li Type the site address you worked at and select the address displayed by the location tab
+            li Click on add shift to add shifts
+            li Click on Remove shift if you have entered the data incorrectly 
+            li Make sure you have entered the times and dates correctly
+            li If a shift is not calculated correctly enter your dates and times again
+            
+
+          a(href='/')
+            button.btn.btn-primary(type="button") I Acknowledge that I have read & Understood the statement above
