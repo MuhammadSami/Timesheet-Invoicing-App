@@ -1,5 +1,5 @@
 extends layout
-//<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvkWSqjKKSrLUO_qKoh-N3ZRj_rE8pAeI&amp&libraries=places&amp;callback=initAutocomplete" async defer></script> 
+
 block scripts
     script.
         //Initializing Autocomplete for Locations
@@ -50,8 +50,8 @@ block scripts
           var endDate = $(eDate).val();
               
           //calculate hours for user normal    
-          var timeStart = new Date(startDate+" "+valuestart).getTime();
-          var timeEnd = new Date(endDate+" "+valuestop).getTime();
+          var timeStart = new Date(startDate+"T"+valuestart).getTime();
+          var timeEnd = new Date(endDate+"T"+valuestop).getTime();
           
           
           var datearray= [];
@@ -132,6 +132,7 @@ block scripts
               var hourDiff = timeEnd - timeStart; //in ms
               // Calculating hours and displaying in hours field
               var hourMin= hourDiff/3600000;
+              parseFloat(hourMin);
               $(hours_worked).val(hourMin.toFixed(2));
               // Caclulating Pay and displaying in pay field
               rate = $(hourly).val("30");
@@ -155,7 +156,6 @@ block scripts
               var pay = rate * hours_w;
               $(amount).val(pay.toFixed(2));
             }
-
           }
         }
 
