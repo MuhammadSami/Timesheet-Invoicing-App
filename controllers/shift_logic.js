@@ -66,7 +66,7 @@ exports.add_shift = function(req, res){
             
   
             // Send Email
-            email.sendHTMLEmail(user,'Invoice from Aus Group Protective Invoice',new_shifts,"email/invoice");
+            email.sendHTMLEmail(user,'Invoice from Aus Group Protective',new_shifts,"email/invoice");
             req.flash('info', 'An e-mail has been sent to ' + req.user.email + ' with the invoice.');
             res.redirect("/pages/add");
         });

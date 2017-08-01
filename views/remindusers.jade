@@ -49,23 +49,24 @@ block content
           .item 
         .ui.bottom.attached.active.tab.segment
             p You are currently logged in as <strong>Admin</strong>
-            table.ui.celled.table
-                - each user in users
-                    thead
+            div(style='height:450px;overflow-x: scroll;')
+                table.ui.celled.table
+                    - each user in users
+                        thead
+                            tr
+                                th First Name
+                                th Last Name
+                                th Abn 
+                                th Security License
+                                th Phone Number
+                                th Email
                         tr
-                            th First Name
-                            th Last Name
-                            th Abn Number
-                            th Security License
-                            th Phone Number
-                            th Email
-                    tr
-                        td= user.firstname
-                        td= user.lastname
-                        td= user.abnnumber
-                        td= user.securitylicense
-                        td= user.phonenumber
-                        td= user.email
+                            td= user.firstname
+                            td= user.lastname
+                            td= user.abnnumber
+                            td= user.securitylicense
+                            td= user.phonenumber
+                            td= user.email
             h4 Write the text message you want to send.
             form(role='form', action="/sendText", method="post", style='max-width: 400px;')
                 .form-group

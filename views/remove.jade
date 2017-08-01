@@ -10,21 +10,13 @@ block scripts
           if(mm<10){mm='0'+mm};
           return d = dd+'/'+mm+'/'+yyyy
         }
-        function check_box() {
-            $('input:checkbox').change(function(){
-                if ($(this).is(':checked')) {
-                    console.log('checked');
-                    console.log($("table").find("tbody td").eq(0).children().first());               
-                }else{
-                    console.log('unchecked');
-                }
-            });
-        };
+        //Search Box
+        
         function myFunction() {
           var input, filter, table, tr, td, i;
           input = document.getElementById("myInput");
           filter = input.value.toUpperCase();
-          table = document.getElementById("table");
+          table = document.getElementById("table1");
           tr = table.getElementsByTagName("tr");
           for (i = 0; i < tr.length; i++) {
             td = tr[i].getElementsByTagName("td")[0];
@@ -38,8 +30,18 @@ block scripts
           }
         }
         $(document).ready( function(){
-            check_box();
-            $('#table tr').each(function() {
+            $('.check').click(function(){
+                $('#table1 input:checked').each(function() {
+                  var sid, uid;
+                  sid = $(this).closest('tr').find('.shift_id').html();
+                  uid = $(this).closest('tr').find('.user_id').html();
+            
+                  $("#shift").val(sid);
+                  $("#user").val(uid);
+                });
+                $('.check').not(this).prop('checked', false);
+            });
+            $('#table1 tr').each(function() {
                 var start_date = $(this).find(".start").html();
                 var end_date = $(this).find(".end").html();
                 $(this).find(".start").html(formatDate(start_date));
@@ -48,7 +50,7 @@ block scripts
         });
         var date = new Date();
          $(document).on('click', '#download', function() {
-          $("#table").table2excel({
+          $("#table1").table2excel({
             // exclude CSS class
             exclude: ".noExl",
             name: "User Data By Name",
@@ -95,40 +97,43 @@ block content
       .ui.bottom.attached.active.tab.segment
         p You are currently logged in as <strong>Admin</strong>
         input#myInput(type='text', onkeyup='myFunction()', placeholder='Search for names..', title='Type in a name')
-        table#table.ui.celled.table
-            thead
-                tr
-                    th Employee 
-                    th Shift ID
-                    th User ID
-                    th Start Date
-                    th End Date    
-                    th Start Time
-                    th End Time    
-                    th Location
-                    th Hours
-                    th Pay Per Shift  
-                tr
-                - each user in users
-                    - each shift in user.shifts
-                        td= user.firstname+" "+user.lastname
-                        td= shift._id
-                        td= user._id
-                        td.start= shift.start_date
-                        td.end= shift.end_date
-                        td= shift.start_time
-                        td= shift.end_time
-                        td= shift.location
-                        td= shift.hours
-                        td= shift.amount
-                        tr.shift
+        div(style='height:450px;overflow-x: scroll;')
+            table#table1.ui.celled.table
+                thead
+                    tr
+                        th Employee 
+                        th Shift ID
+                        th User ID
+                        th Start Date
+                        th End Date    
+                        th Start Time
+                        th End Time    
+                        th Location
+                        th Hours
+                        th Pay Per Shift  
+                    tr
+                    - each user in users
+                        - each shift in user.shifts
+                            td= user.firstname+" "+user.lastname
+                            td.shift_id= shift._id
+                            td.user_id= user._id
+                            td.start= shift.start_date
+                            td.end= shift.end_date
+                            td= shift.start_time
+                            td= shift.end_time
+                            td= shift.location
+                            td= shift.hours
+                            td= shift.amount
+                            td 
+                                input(type='checkbox', class="check")
+                            tr.shift
         form(role='form', action="/remove",method="post", style='max-width: 300px;')
             .form-group
                 h5 Enter Shift ID
-                input.form-control(type='text', name="shift_id", placeholder='Enter Shift Id' autofocus='')
+                input.form-control(type='text', name="shift_id", id="shift" placeholder='Enter Shift Id' autofocus='')
             .form-group
                 h5 Enter User ID
-                input.form-control(type='text', name="user_id", placeholder='Enter User Id' autofocus='')
+                input.form-control(type='text', name="user_id", id="user" placeholder='Enter User Id' autofocus='')
             button.btn.btn-default(type='submit') Remove Selected 
             &nbsp;
             a(href='/')

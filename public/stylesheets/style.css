@@ -44,20 +44,13 @@ tr.shift {
 .ui.raised.very.padded.text.container.segment{
 background:#b3b3b3;
 }
-.error {
-    color:red;
-    border: solid 1px red;
-}
-.valid {
-     border: solid 1px green;
-     color:green;
-}
+
 * {
   box-sizing: border-box;
 }
 
 #myInput {
-  background-image: url('searchicon.png');
+  background-image: url('./searchicon.png');
   background-position: 10px 10px;
   background-repeat: no-repeat;
   width: 100%;
@@ -85,3 +78,4 @@ background:#b3b3b3;
 #myTable tr.header, #myTable tr:hover {
   background-color: #f1f1f1;
 }
+

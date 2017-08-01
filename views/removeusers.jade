@@ -1,19 +1,20 @@
 extends layout
 block scripts
     script.
-        function check_box() {
-            $('input:checkbox').change(function(){
-                if ($(this).is(':checked')) {
-                    console.log('checked');
-                    console.log($("table").find("tbody td").eq(0).children().first());               
-                }else{
-                    console.log('unchecked');
-                }
-            });
-        };
         $(document).ready( function(){
-            check_box();
+
+            $(".check").click(function(){
+                $('#search input:checked').change(function() {
+                  var uid;
+                  uid = $(this).closest('tr').find('.user_id').html();
+                  $("#user").val(uid);
+                   
+                });
+            
+                $('.check').not(this).prop('checked', false);
+            });
         });
+
         var date = new Date();
          $(document).on('click', '#download', function() {
           $("#search").table2excel({
@@ -63,29 +64,32 @@ block content
           .item 
         .ui.bottom.attached.active.tab.segment
             p You are currently logged in as <strong>Admin</strong>
-            table#search.ui.celled.table
-                thead
+            div(style='height:450px;overflow-x: scroll;')
+                table#search.ui.celled.table
+                    thead
+                        tr
+                            th User ID
+                            th Username
+                            th First Name
+                            th Last Name
+                            th Abn Number
+                            th Security License
+                            th Phone Number
+                            th Email
                     tr
-                        th User ID
-                        th Username
-                        th First Name
-                        th Last Name
-                        th Abn Number
-                        th Security License
-                        th Phone Number
-                        th Email
-                tr
-                - each user in users
-                    tr
-                    td= user._id
-                    td= user.username
-                    td= user.firstname
-                    td= user.lastname
-                    td= user.abnnumber
-                    td= user.securitylicense
-                    td= user.phonenumber
-                    td= user.email
-                    tr.clickable
+                    - each user in users
+                        tr
+                        td.user_id= user._id
+                        td= user.username
+                        td= user.firstname
+                        td= user.lastname
+                        td= user.abnnumber
+                        td= user.securitylicense
+                        td= user.phonenumber
+                        td= user.email
+                        td 
+                            input(type='checkbox', class="check")
+                        tr.clickable
 
             button#download.positive.ui.button
               i.download.icon
@@ -93,7 +97,7 @@ block content
             
             form(role='form', action="/removeusers",method="post", style='max-width: 300px;')
                 .form-group
-                    input.form-control(type='text', name="user_id", placeholder='Enter User Id' autofocus='')
+                    input.form-control(type='text', name="user_id", id="user" placeholder='Enter User Id' autofocus='')
                 button.btn.btn-default(type='submit') Remove Selected 
                 &nbsp;
                 a(href='/')
