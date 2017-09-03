@@ -16,6 +16,19 @@ exports.compile = function(relativeTemplatePath, data, next){
       throw new Error('Problem compiling template(double check relative template path): ' + relativeTemplatePath);
     }
     console.log('[INFO] COMPILED TEMPLATE: ', compiledTemplate)
+    var date = new Date();
+    fs.open(process.cwd()+'/views/email/userinvoice'+date+'.html', 'w+', function(err, fd) {
+     if (err) {
+        return console.error(err);
+     }
+      fs.writeFile(fd, compiledTemplate, function(err) {
+          if(err) {
+              return console.log(err);
+          }
+      
+          console.log("The file was saved!");
+      }); 
+    });
     next(null, compiledTemplate);
   });
   
