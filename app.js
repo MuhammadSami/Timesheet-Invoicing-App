@@ -16,8 +16,8 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var flash = require('express-flash');
 // Twilio Credentials 
-var accountSid = 'AC0c596227fab1b16327d5f32f0be17477'; 
-var authToken = 'ddf92087fcb254eaad49b938770d4a69'; 
+var accountSid = ''; 
+var authToken = ''; 
  
 //require the Twilio module and create a REST client 
 var client = require('twilio')(accountSid, authToken); 

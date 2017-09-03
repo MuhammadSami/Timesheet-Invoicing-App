@@ -12,8 +12,8 @@ exports.sendHTMLEmail = function(user,subject,content,template_location){
             port: 465,
             secure: true,
             auth: {
-                user: 'pathfinderprotective@gmail.com',
-                pass: "vmmsgfppemfxgbsj"
+                user: '',
+                pass: ""
             }
         });
         
@@ -41,8 +41,8 @@ exports.sendHTMLEmail = function(user,subject,content,template_location){
             
             // Mail
             var mailOptions = {
-                  to: user.email+', agprotective@gmail.com',
-                  from: 'pathfinderprotective@gmail.com',
+                  to: user.email,
+                  from: '',
                   subject: subject,
                   html: html
                   
